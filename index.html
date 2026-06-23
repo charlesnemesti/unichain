@@ -53,7 +53,7 @@
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </svg>
             </a>
-            <a href="#wallet" class="btn-primary hidden sm:inline-flex">Buy $HASH ↗</a>
+            <a href="#wallet" class="btn-primary buy-hash-link hidden sm:inline-flex">Buy $HASH ↗</a>
             <div id="wallet-dropdown-header" class="wallet-dropdown">
               <button
                 id="btn-connect-header"
@@ -79,7 +79,7 @@
         </div>
 
         <nav class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-ui px-6 py-3 lg:hidden" aria-label="Mobile navigation">
-          <a href="#wallet" class="btn-primary text-[10px] sm:hidden">Buy $HASH ↗</a>
+          <a href="#wallet" class="btn-primary buy-hash-link text-[10px] sm:hidden">Buy $HASH ↗</a>
           <a href="#how-it-works" class="nav-link text-xs">How it works</a>
           <a href="#the-hash" class="nav-link text-xs">Hashes</a>
           <a href="#tokenomics" class="nav-link text-xs">Tokenomics</a>
@@ -178,7 +178,7 @@
               the <span class="text-fluor">frozen tokenURI</span> permanently on-chain.
             </p>
 
-            <div class="mb-10 grid gap-4 md:grid-cols-3">
+            <div id="hash-showcase-cards" class="mb-10 grid gap-4 md:grid-cols-3">
               <article class="hash-card hash-card--live">
                 <div class="hash-preview" aria-hidden="true">
                   <svg viewBox="0 0 24 24" class="h-full w-full"><rect width="24" height="24" fill="#000"/><rect x="4" y="4" width="4" height="4" fill="#DFFF00"/><rect x="12" y="8" width="4" height="4" fill="#DFFF00"/><rect x="8" y="16" width="8" height="4" fill="#DFFF00"/></svg>
@@ -224,8 +224,8 @@
 
             <div class="panel-box mb-12">
               <p class="label-text mb-2">Total supply</p>
-              <p class="font-terminal text-5xl text-fluor md:text-6xl">5,000</p>
-              <p class="mt-2 font-mono text-sm text-fluor">$HASH · fixed forever</p>
+              <p class="font-terminal text-5xl text-fluor md:text-6xl" id="token-total-supply">·</p>
+              <p class="mt-2 font-mono text-sm text-fluor"><span id="token-symbol">$HASH</span> · fixed forever</p>
               <p class="body-text mt-6 max-w-2xl">
                 It launched fairly, with the whole supply paired into the pool against 1 ETH and nothing
                 held back for a team.
@@ -269,7 +269,7 @@
               the full 3D collection.
             </p>
 
-            <div class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12">
+            <div id="landing-gallery-grid" class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12">
               <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="2" y="2" width="6" height="6" fill="#DFFF00"/></svg></div>
               <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="8" y="4" width="8" height="4" fill="#DFFF00"/></svg></div>
               <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="4" y="8" width="4" height="8" fill="#DFFF00"/></svg></div>

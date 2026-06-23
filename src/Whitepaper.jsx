@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Logo } from './Logo.jsx';
+import { UNIHASH_CA, ETHERSCAN_TOKEN_URL, UNISWAP_BUY_URL } from './config/deployed.js';
 
 const NAV_ITEMS = [
   { id: 'overview', label: 'ABSTRACT' },
@@ -163,8 +164,10 @@ export default function Whitepaper() {
               </svg>
             </a>
             <a
-              href="/#wallet"
+              href={UNISWAP_BUY_URL}
               className="hidden border border-fluor bg-fluor px-4 py-2 text-xs uppercase tracking-widest text-black sm:inline-flex"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               Buy $HASH ↗
             </a>
@@ -383,11 +386,8 @@ export default function Whitepaper() {
                 'mint rule: ≥1 whole $HASH spawns · <1 burns',
               ]}
             />
-            <CodeBlock>{`$HASH (ERC-20)          0x0000…0000  pending
-HashRegistry (ERC-721)  0x0000…0000  pending
-HashHook               0x0000…0000  pending
-RewardDistributor      0x0000…0000  pending
-Uniswap v4 Pool        0x0000…0000  pending`}</CodeBlock>
+            <CodeBlock>{`UniHash (token + NFT + hook)  ${UNIHASH_CA}
+Etherscan                      ${ETHERSCAN_TOKEN_URL}`}</CodeBlock>
             <p className="mt-6 text-sm leading-relaxed text-zinc-400">
               Hold $HASH, grow a Hash, earn rewards. Everything above runs on-chain the moment you cross 1
               whole token.

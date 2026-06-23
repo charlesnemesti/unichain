@@ -1,4 +1,5 @@
 import { isAddress, zeroAddress } from 'viem';
+import { UNIHASH_CA } from './deployed.js';
 
 const zero = zeroAddress;
 
@@ -7,7 +8,7 @@ function parseAddress(value, fallback = zero) {
   return value;
 }
 
-const unihash = parseAddress(import.meta.env.VITE_UNIHASH);
+const unihash = parseAddress(import.meta.env.VITE_UNIHASH, UNIHASH_CA);
 
 function resolveContract(specific) {
   const specificAddr = parseAddress(specific);

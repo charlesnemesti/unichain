@@ -1,10 +1,11 @@
-import { formatEther, zeroAddress } from 'viem';
+import { formatEther, formatUnits, zeroAddress } from 'viem';
 import { unihashAbi } from '../abis/unihash.js';
 import { generateHashSvg } from '../hash-svgs.js';
 import { CONTRACTS, contractsConfigured, isDeployed } from '../config/contracts.js';
 import { getPublicClient } from './provider.js';
 
-const MULTICALL_CHUNK = 40;
+const MULTICALL_CHUNK = 80;
+const HOLDERS_CHUNK = 200;
 
 function contractAddress() {
   return isDeployed(CONTRACTS.unihash)
@@ -16,6 +17,26 @@ function contractAddress() {
 
 function shortenAddress(address) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+/**
+ * @param {number} mintedNum
+ * @param {number} sampleSize
+ */
+export function sampleTokenIds(mintedNum, sampleSize) {
+  if (mintedNum <= 0) return [];
+  if (!sampleSize || sampleSize >= mintedNum) {
+    return Array.from({ length: mintedNum }, (_, index) => index + 1);
+  }
+
+  const ids = Array.from({ length: mintedNum }, (_, index) => index + 1);
+
+  for (let i = ids.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [ids[i], ids[j]] = [ids[j], ids[i]];
+  }
+
+  return ids.slice(0, sampleSize).sort((a, b) => a - b);
 }
 
 /**
@@ -36,6 +57,13 @@ function shortenAddress(address) {
  */
 
 /**
+ * @typedef {Object} TokenMetadata
+ * @property {string} symbol
+ * @property {number} totalSupply
+ * @property {number} minted
+ */
+
+/**
  * @returns {Promise<number>}
  */
 export async function readMintedCount() {
@@ -50,6 +78,58 @@ export async function readMintedCount() {
   });
 
   return Number(minted);
+}
+
+/**
+ * @returns {Promise<TokenMetadata | null>}
+ */
+export async function readTokenMetadata() {
+  const address = contractAddress();
+  if (!address) return null;
+
+  const client = getPublicClient();
+  const [symbol, totalSupply, decimals, minted] = await Promise.all([
+    client.readContract({ address, abi: unihashAbi, functionName: 'symbol' }),
+    client.readContract({ address, abi: unihashAbi, functionName: 'TOTAL_SUPPLY' }).catch(() =>
+      client.readContract({ address, abi: unihashAbi, functionName: 'totalSupply' }),
+    ),
+    client.readContract({ address, abi: unihashAbi, functionName: 'decimals' }),
+    client.readContract({ address, abi: unihashAbi, functionName: 'minted' }),
+  ]);
+
+  return {
+    symbol,
+    totalSupply: Number.parseFloat(formatUnits(totalSupply, Number(decimals))),
+    minted: Number(minted),
+  };
+}
+
+/**
+ * @param {import('viem').PublicClient} client
+ * @param {`0x${string}`} address
+ * @param {number} mintedNum
+ */
+async function readUniqueHolders(client, address, mintedNum) {
+  const owners = [];
+
+  for (let start = 1; start <= mintedNum; start += HOLDERS_CHUNK) {
+    const end = Math.min(start + HOLDERS_CHUNK - 1, mintedNum);
+    const contracts = Array.from({ length: end - start + 1 }, (_, index) => ({
+      address,
+      abi: unihashAbi,
+      functionName: 'ownerOf',
+      args: [BigInt(start + index)],
+    }));
+
+    const results = await client.multicall({ contracts });
+    owners.push(
+      ...results
+        .map((result) => result.result)
+        .filter((owner) => owner && owner !== zeroAddress),
+    );
+  }
+
+  return new Set(owners.map((owner) => owner.toLowerCase())).size;
 }
 
 /**
@@ -68,103 +148,56 @@ export async function readProtocolStats() {
     return { hashesAlive: 0, holders: 0, blocksSpawned: 0 };
   }
 
-  const ownerCalls = Array.from({ length: mintedNum }, (_, index) => ({
-    address,
-    abi: unihashAbi,
-    functionName: 'ownerOf',
-    args: [BigInt(index + 1)],
-  }));
-
-  const ownerResults = await client.multicall({ contracts: ownerCalls });
-  const owners = ownerResults
-    .map((result) => result.result)
-    .filter((owner) => owner && owner !== zeroAddress);
-
-  const holders = new Set(owners.map((owner) => owner.toLowerCase())).size;
-
-  let blocksSpawned = 0;
-
-  try {
-    const fromBlock = import.meta.env.VITE_CONTRACT_FROM_BLOCK
-      ? BigInt(import.meta.env.VITE_CONTRACT_FROM_BLOCK)
-      : 'earliest';
-
-    const logs = await client.getContractEvents({
-      address,
-      abi: unihashAbi,
-      eventName: 'ERC721Transfer',
-      fromBlock,
-      toBlock: 'latest',
-    });
-
-    const spawnBlocks = new Set();
-    for (const log of logs) {
-      if (log.args.from === zeroAddress) spawnBlocks.add(log.blockNumber);
-    }
-
-    blocksSpawned = spawnBlocks.size;
-  } catch (error) {
-    console.warn('[UniHash] Could not read spawn blocks:', error);
-    blocksSpawned = mintedNum;
-  }
+  const holders = await readUniqueHolders(client, address, mintedNum);
 
   return {
     hashesAlive: mintedNum,
     holders,
-    blocksSpawned,
+    blocksSpawned: mintedNum,
   };
 }
 
 /**
- * @returns {Promise<MintedHash[]>}
+ * @param {number[]} tokenIds
  */
-export async function loadMintedHashes() {
+async function loadHashesForTokenIds(tokenIds) {
   const address = contractAddress();
-  if (!address) return [];
+  if (!address || tokenIds.length === 0) return [];
 
   const client = getPublicClient();
-  const mintedNum = await readMintedCount();
-  if (mintedNum === 0) return [];
-
   /** @type {{ tokenId: number, owner: `0x${string}`, seed: bigint }[]} */
   const raw = [];
 
-  for (let start = 1; start <= mintedNum; start += MULTICALL_CHUNK) {
-    const end = Math.min(start + MULTICALL_CHUNK - 1, mintedNum);
-    const contracts = [];
-
-    for (let tokenId = start; tokenId <= end; tokenId += 1) {
-      contracts.push(
-        {
-          address,
-          abi: unihashAbi,
-          functionName: 'ownerOf',
-          args: [BigInt(tokenId)],
-        },
-        {
-          address,
-          abi: unihashAbi,
-          functionName: 'seedOf',
-          args: [BigInt(tokenId)],
-        },
-      );
-    }
+  for (let offset = 0; offset < tokenIds.length; offset += MULTICALL_CHUNK) {
+    const chunk = tokenIds.slice(offset, offset + MULTICALL_CHUNK);
+    const contracts = chunk.flatMap((tokenId) => [
+      {
+        address,
+        abi: unihashAbi,
+        functionName: 'ownerOf',
+        args: [BigInt(tokenId)],
+      },
+      {
+        address,
+        abi: unihashAbi,
+        functionName: 'seedOf',
+        args: [BigInt(tokenId)],
+      },
+    ]);
 
     const results = await client.multicall({ contracts });
 
-    for (let tokenId = start; tokenId <= end; tokenId += 1) {
-      const offset = (tokenId - start) * 2;
-      const owner = results[offset]?.result;
-      const seed = results[offset + 1]?.result;
-
-      if (!owner) continue;
+    chunk.forEach((tokenId, index) => {
+      const owner = results[index * 2]?.result;
+      const seed = results[index * 2 + 1]?.result;
+      if (!owner) return;
 
       raw.push({
         tokenId,
         owner,
         seed: seed ?? BigInt(tokenId * 97 + 13),
       });
-    }
+    });
   }
 
   const uniqueOwners = [...new Set(raw.map((entry) => entry.owner))];
@@ -197,9 +230,31 @@ export async function loadMintedHashes() {
 }
 
 /**
- * @param {MintedHash[]} hashes
- * @param {number} tokenId
+ * @param {{ sampleSize?: number, tokenIds?: number[] }} [options]
+ * @returns {Promise<MintedHash[]>}
  */
-export function findMintedHash(hashes, tokenId) {
-  return hashes.find((entry) => entry.tokenId === tokenId) ?? null;
+export async function loadMintedHashes(options = {}) {
+  const address = contractAddress();
+  if (!address) return [];
+
+  const mintedNum = await readMintedCount();
+  if (mintedNum === 0) return [];
+
+  const tokenIds =
+    options.tokenIds ??
+    sampleTokenIds(mintedNum, options.sampleSize ?? mintedNum);
+
+  return loadHashesForTokenIds(tokenIds);
+}
+
+/**
+ * @param {number} count
+ * @returns {Promise<MintedHash[]>}
+ */
+export async function loadSampleHashes(count) {
+  const mintedNum = await readMintedCount();
+  if (mintedNum === 0) return [];
+
+  const tokenIds = sampleTokenIds(mintedNum, count);
+  return loadHashesForTokenIds(tokenIds);
 }

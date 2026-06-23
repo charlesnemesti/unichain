@@ -4,10 +4,9 @@ import * as THREE from 'three';
 import TWEEN from 'three/examples/jsm/libs/tween.module.js';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls.js';
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/renderers/CSS3DRenderer.js';
-import { GALLERY_HASH_COUNT, HASH_SVGS } from './hash-svgs.js';
 import { loadMintedHashes, readMintedCount } from './web3/protocol.js';
 
-const LIVE_GALLERY_THRESHOLD = 120;
+const GALLERY_DISPLAY_CAP = 120;
 const TABLE_COLS = 12;
 const TABLE_SPACING_X = 132;
 const TABLE_SPACING_Y = 148;
@@ -32,14 +31,13 @@ const LAYOUT_BUTTON_IDS = {
  * @property {string} owner
  * @property {string} yieldLabel
  * @property {string} svg
- * @property {boolean} isPlaceholder
  */
 
 /** @type {GalleryEntry[]} */
 let galleryEntries = [];
 
-/** @type {boolean} */
-let liveMode = false;
+/** @type {number} */
+let totalMinted = 0;
 
 /** @type {THREE.PerspectiveCamera | null} */
 let camera = null;
@@ -84,66 +82,15 @@ function formatEth(value) {
 }
 
 /**
- * @param {number} seed
- */
-function seededRandom(seed) {
-  let t = seed + 0x6d2b79f5;
-
-  return () => {
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/**
- * @param {number} catalogIndex
- */
-function getHashPlaceholderMeta(catalogIndex) {
-  const tokenId = catalogIndex + 1;
-  const rand = seededRandom(tokenId * 7919 + 104729);
-  const hexChar = () => Math.floor(rand() * 16).toString(16);
-
-  let wallet = '0x';
-  for (let i = 0; i < 40; i += 1) wallet += hexChar();
-
-  const dailyYield = (0.06 + rand() * 2.75).toFixed(3);
-
-  return {
-    hashId: `#${String(tokenId).padStart(4, '0')}`,
-    owner: `${wallet.slice(0, 6)}…${wallet.slice(-4)}`,
-    dailyYield: `~${dailyYield} $HASH / day`,
-  };
-}
-
-/**
- * @returns {GalleryEntry[]}
- */
-function buildPlaceholderEntries() {
-  return Array.from({ length: GALLERY_HASH_COUNT }, (_, index) => {
-    const meta = getHashPlaceholderMeta(index);
-
-    return {
-      hashId: meta.hashId,
-      owner: meta.owner,
-      yieldLabel: meta.dailyYield,
-      svg: HASH_SVGS[index % HASH_SVGS.length],
-      isPlaceholder: true,
-    };
-  });
-}
-
-/**
  * @param {import('./web3/protocol.js').MintedHash[]} hashes
  * @returns {GalleryEntry[]}
  */
-function buildLiveEntries(hashes) {
+function buildGalleryEntries(hashes) {
   return hashes.map((hash) => ({
     hashId: hash.hashId,
     owner: hash.ownerShort,
     yieldLabel: formatEth(hash.claimableEth),
     svg: hash.svg,
-    isPlaceholder: false,
   }));
 }
 
@@ -159,14 +106,6 @@ function shuffleIndices(count) {
   }
 
   return indices;
-}
-
-function setShowcaseYieldLabel() {
-  const yieldLabel = document.querySelector(
-    '#gallery-showcase-details .gallery-showcase-detail:last-child dt',
-  );
-  if (!yieldLabel) return;
-  yieldLabel.textContent = liveMode ? 'Claimable rewards' : 'Daily yield';
 }
 
 /**
@@ -189,7 +128,7 @@ function updateShowcaseDetails(listIndex) {
   hashIdEl.textContent = entry.hashId;
   hashIdEl.classList.add('is-fluor');
   ownerEl.textContent = entry.owner;
-  ownerEl.classList.toggle('is-fluor', !entry.isPlaceholder);
+  ownerEl.classList.remove('is-fluor');
   yieldEl.textContent = entry.yieldLabel;
   yieldEl.classList.add('is-fluor');
 }
@@ -343,7 +282,7 @@ function createHashElement(entry) {
 
   const label = document.createElement('p');
   label.className = 'hash-element-label';
-  label.textContent = entry.isPlaceholder ? 'preview svg' : entry.owner;
+  label.textContent = entry.owner;
   element.appendChild(label);
 
   return element;
@@ -488,77 +427,78 @@ function disposeGalleryScene() {
   renderer?.domElement?.remove();
 }
 
-/**
- * @param {number | null} mintedCount
- */
-function updateGalleryIntroPlaceholder(mintedCount) {
+function showGalleryEmptyState(message) {
+  const introCopy = document.getElementById('gallery-intro-copy');
+  const introNote = document.getElementById('gallery-intro-note');
+  const showcase = document.querySelector('.gallery-showcase');
+  const container = document.getElementById('gallery-container');
+  const menu = document.getElementById('gallery-menu');
+
+  if (introCopy) introCopy.textContent = message;
+  if (introNote) introNote.hidden = true;
+  showcase?.classList.add('is-empty');
+  container?.classList.add('is-empty');
+  menu?.classList.add('is-hidden');
+
+  const hashIdEl = document.getElementById('gallery-showcase-hashid');
+  const ownerEl = document.getElementById('gallery-showcase-owner');
+  const yieldEl = document.getElementById('gallery-showcase-yield');
+  if (hashIdEl) hashIdEl.textContent = '—';
+  if (ownerEl) ownerEl.textContent = '—';
+  if (yieldEl) yieldEl.textContent = '0 ETH';
+}
+
+function updateGalleryIntro(displayedCount) {
   const introCopy = document.getElementById('gallery-intro-copy');
   const introNote = document.getElementById('gallery-intro-note');
   const showcaseLabel = document.getElementById('gallery-showcase-label');
 
   if (introCopy) {
     introCopy.textContent =
-      '120 preview Hashes rendered as living 24×24 SVG art. Drag to explore, then switch layouts below.';
+      totalMinted === 1
+        ? '1 living Hash rendered fully on-chain. Drag to explore, then switch layouts below.'
+        : `${totalMinted.toLocaleString('en-US')} living Hashes on-chain. Drag to explore, then switch layouts below.`;
   }
 
   if (introNote) {
-    const minted = Number.isFinite(mintedCount) ? mintedCount : 0;
-    const remaining = Math.max(0, LIVE_GALLERY_THRESHOLD - minted);
-    introNote.textContent =
-      remaining === LIVE_GALLERY_THRESHOLD
-        ? `Preview mode — this grid will switch to live on-chain data once ${LIVE_GALLERY_THRESHOLD} Hashes are minted.`
-        : `Preview mode — ${minted.toLocaleString('en-US')} / ${LIVE_GALLERY_THRESHOLD} minted. Live on-chain data unlocks at ${LIVE_GALLERY_THRESHOLD}.`;
-    introNote.hidden = false;
+    if (totalMinted > displayedCount) {
+      introNote.textContent = `Showing ${displayedCount.toLocaleString('en-US')} of ${totalMinted.toLocaleString('en-US')} minted Hashes in the 3D grid — all data read live from the contract.`;
+      introNote.hidden = false;
+    } else {
+      introNote.hidden = true;
+    }
   }
 
-  if (showcaseLabel) showcaseLabel.textContent = 'Preview pattern';
-}
-
-/**
- * @param {number} count
- */
-function updateGalleryIntroLive(count) {
-  const introCopy = document.getElementById('gallery-intro-copy');
-  const introNote = document.getElementById('gallery-intro-note');
-  const showcaseLabel = document.getElementById('gallery-showcase-label');
-
-  if (introCopy) {
-    introCopy.textContent =
-      count === 1
-        ? '1 living Hash rendered fully on-chain. Drag to explore, then switch layouts below.'
-        : `${count.toLocaleString('en-US')} living Hashes rendered fully on-chain. Drag to explore, then switch layouts below.`;
-  }
-
-  if (introNote) introNote.hidden = true;
   if (showcaseLabel) showcaseLabel.textContent = 'Live pattern';
 }
 
 async function bootGallery() {
-  galleryEntries = buildPlaceholderEntries();
-  liveMode = false;
+  const introCopy = document.getElementById('gallery-intro-copy');
+  if (introCopy) introCopy.textContent = 'Loading on-chain Hashes from the contract…';
 
   try {
-    const mintedCount = await readMintedCount();
+    totalMinted = await readMintedCount();
 
-    if (mintedCount >= LIVE_GALLERY_THRESHOLD) {
-      const hashes = await loadMintedHashes();
-      if (hashes.length >= LIVE_GALLERY_THRESHOLD) {
-        galleryEntries = buildLiveEntries(hashes);
-        liveMode = true;
-        updateGalleryIntroLive(hashes.length);
-      } else {
-        updateGalleryIntroPlaceholder(mintedCount);
-      }
-    } else {
-      updateGalleryIntroPlaceholder(mintedCount);
+    if (totalMinted === 0) {
+      showGalleryEmptyState('No Hashes minted yet. Hold 1 $HASH to spawn the first living Hash on-chain.');
+      return;
     }
-  } catch (error) {
-    console.warn('[UniHash] Could not read minted count — using preview gallery:', error);
-    updateGalleryIntroPlaceholder(null);
-  }
 
-  setShowcaseYieldLabel();
-  initGalleryScene();
+    const sampleSize = Math.min(GALLERY_DISPLAY_CAP, totalMinted);
+    const hashes = await loadMintedHashes({ sampleSize });
+    galleryEntries = buildGalleryEntries(hashes);
+
+    if (galleryEntries.length === 0) {
+      showGalleryEmptyState('Could not load on-chain Hashes. Check your RPC connection.');
+      return;
+    }
+
+    updateGalleryIntro(galleryEntries.length);
+    initGalleryScene();
+  } catch (error) {
+    console.error('[UniHash] Could not load gallery data:', error);
+    showGalleryEmptyState('Could not load on-chain Hashes. Check your RPC and contract address.');
+  }
 }
 
 bootGallery();

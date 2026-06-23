@@ -14,6 +14,10 @@ import {
   closeWalletDropdowns,
   initWalletDropdown,
   readProtocolStats,
+  readTokenMetadata,
+  loadSampleHashes,
+  UNISWAP_BUY_URL,
+  ETHERSCAN_TOKEN_URL,
 } from './web3/index.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -401,28 +405,6 @@ async function tryRestoreSession() {
   updateUI();
 }
 
-function animateStat(id, target) {
-  const el = $(id);
-  if (!el) return;
-
-  const safeTarget = Number.isFinite(target) ? Math.max(0, target) : 0;
-  if (safeTarget === 0) {
-    el.textContent = '0';
-    return;
-  }
-
-  let current = 0;
-  const step = Math.max(1, Math.ceil(safeTarget / 60));
-
-  const tick = () => {
-    current = Math.min(current + step, safeTarget);
-    el.textContent = formatNumber(current);
-    if (current < safeTarget) requestAnimationFrame(tick);
-  };
-
-  requestAnimationFrame(tick);
-}
-
 async function initHeroStats() {
   const ids = ['stat-hashes', 'stat-holders', 'stat-spawned'];
   ids.forEach((id) => {
@@ -445,6 +427,102 @@ async function initHeroStats() {
       const el = $(id);
       if (el) el.textContent = '—';
     });
+  }
+}
+
+function animateStat(id, target) {
+  const el = $(id);
+  if (!el) return;
+
+  const safeTarget = Number.isFinite(target) ? Math.max(0, target) : 0;
+  if (safeTarget === 0) {
+    el.textContent = '0';
+    return;
+  }
+
+  let current = 0;
+  const step = Math.max(1, Math.ceil(safeTarget / 60));
+
+  const tick = () => {
+    current = Math.min(current + step, safeTarget);
+    el.textContent = formatNumber(current);
+    if (current < safeTarget) requestAnimationFrame(tick);
+  };
+
+  requestAnimationFrame(tick);
+}
+
+function initBuyLinks() {
+  document.querySelectorAll('.buy-hash-link').forEach((link) => {
+    link.href = UNISWAP_BUY_URL;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+  });
+}
+
+async function initTokenomics() {
+  const supplyEl = $('token-total-supply');
+  const symbolEl = $('token-symbol');
+  if (!supplyEl) return;
+
+  if (!contractsConfigured()) {
+    supplyEl.textContent = '—';
+    return;
+  }
+
+  try {
+    const meta = await readTokenMetadata();
+    if (!meta) return;
+
+    supplyEl.textContent = formatNumber(meta.totalSupply);
+    if (symbolEl) symbolEl.textContent = `$${meta.symbol}`;
+  } catch (error) {
+    console.error('[UniHash] Could not load token metadata:', error);
+    supplyEl.textContent = '—';
+  }
+}
+
+function renderHashPreview(svgMarkup) {
+  return `<svg viewBox="0 0 24 24" class="h-full w-full">${svgMarkup}</svg>`;
+}
+
+async function initLandingOnChainContent() {
+  if (!contractsConfigured()) return;
+
+  try {
+    const samples = await loadSampleHashes(15);
+    if (samples.length === 0) return;
+
+    const grid = $('landing-gallery-grid');
+    if (grid) {
+      grid.innerHTML = samples
+        .map(
+          (hash) =>
+            `<div class="gallery-cell" title="${hash.hashId}"><svg viewBox="0 0 24 24">${hash.svg}</svg></div>`,
+        )
+        .join('');
+    }
+
+    const cardsRoot = $('hash-showcase-cards');
+    if (cardsRoot) {
+      const featured = samples.slice(0, 3);
+      const cardClasses = ['hash-card hash-card--live', 'hash-card hash-card--sealed', 'hash-card hash-card--live'];
+
+      cardsRoot.innerHTML = featured
+        .map(
+          (hash, index) => `
+          <article class="${cardClasses[index] ?? 'hash-card hash-card--live'}">
+            <div class="hash-preview" aria-hidden="true">${renderHashPreview(hash.svg)}</div>
+            <div>
+              <p class="hash-name">hash_${hash.hashId.slice(1)}</p>
+              <p class="hash-status hash-status--active">Live · ${hash.ownerShort}</p>
+            </div>
+          </article>`,
+        )
+        .join('');
+    }
+  } catch (error) {
+    console.error('[UniHash] Could not load landing on-chain previews:', error);
   }
 }
 
@@ -483,6 +561,9 @@ function initWeb3UI() {
   tryRestoreSession();
 
   initHeroStats();
+  initBuyLinks();
+  initTokenomics();
+  initLandingOnChainContent();
   updateUI();
 }
 

@@ -39,15 +39,13 @@
       <p class="gallery-intro-label">Gallery</p>
       <h1 class="gallery-intro-title">On-chain SVG grid</h1>
       <p class="gallery-intro-copy" id="gallery-intro-copy">
-        120 preview Hashes rendered as living 24×24 SVG art. Drag to explore, then switch layouts below.
+        Loading on-chain Hashes from the contract…
       </p>
-      <p class="gallery-intro-note" id="gallery-intro-note">
-        Preview mode — this grid will switch to live on-chain data once 120 Hashes are minted.
-      </p>
+      <p class="gallery-intro-note" id="gallery-intro-note" hidden></p>
     </div>
 
     <div class="gallery-showcase" aria-live="polite">
-      <p class="gallery-showcase-label" id="gallery-showcase-label">Preview pattern</p>
+      <p class="gallery-showcase-label" id="gallery-showcase-label">Live pattern</p>
       <div class="gallery-showcase-frame" id="gallery-showcase-frame">
         <svg id="gallery-showcase-svg" viewBox="0 0 24 24" role="img" aria-label="Animated Hash pattern preview"></svg>
       </div>
@@ -62,8 +60,8 @@
           <dd id="gallery-showcase-owner">0x0000…0000</dd>
         </div>
         <div class="gallery-showcase-detail">
-          <dt>Daily yield</dt>
-          <dd id="gallery-showcase-yield">~0.000 $HASH / day</dd>
+          <dt>Claimable rewards</dt>
+          <dd id="gallery-showcase-yield">0 ETH</dd>
         </div>
       </dl>
     </div>
