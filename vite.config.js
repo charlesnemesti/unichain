@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         main: './index.html',
         whitepaper: './whitepaper.html',
+        gallery: './gallery.html',
       },
     },
   },

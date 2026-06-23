@@ -18,11 +18,15 @@
     />
   </head>
 
-  <body class="bg-void text-white">
-    <div class="relative z-10 flex min-h-screen flex-col bg-void">
+  <body class="text-white">
+    <!-- Fixed Three.js background (full site) -->
+    <div id="hero-canvas" class="site-bg-canvas" aria-hidden="true"></div>
+    <div class="site-bg-overlay" aria-hidden="true"></div>
+
+    <div class="relative z-10 flex min-h-screen flex-col">
 
       <!-- ═══ HEADER / NAV ═══ -->
-      <header class="fixed top-0 left-0 right-0 z-50 border-b border-ui bg-void">
+      <header class="site-header-glass fixed top-0 left-0 right-0 z-50 border-b border-ui">
         <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 md:px-10">
           <a href="#" class="site-logo shrink-0">
             <img src="/logo.svg" alt="" width="36" height="36" class="site-logo-mark" aria-hidden="true" />
@@ -33,7 +37,7 @@
             <a href="#how-it-works" class="nav-link">How it works</a>
             <a href="#the-hash" class="nav-link">Hashes</a>
             <a href="#tokenomics" class="nav-link">Tokenomics</a>
-            <a href="#gallery" class="nav-link">Gallery</a>
+            <a href="gallery.html" class="nav-link">Gallery</a>
             <a href="whitepaper.html" class="nav-link">Whitepaper</a>
           </nav>
 
@@ -68,18 +72,15 @@
           <a href="#how-it-works" class="nav-link text-xs">How it works</a>
           <a href="#the-hash" class="nav-link text-xs">Hashes</a>
           <a href="#tokenomics" class="nav-link text-xs">Tokenomics</a>
-          <a href="#gallery" class="nav-link text-xs">Gallery</a>
+          <a href="gallery.html" class="nav-link text-xs">Gallery</a>
           <a href="whitepaper.html" class="nav-link text-xs">Whitepaper</a>
         </nav>
       </header>
 
-      <main class="site-main bg-void">
+      <main class="site-main">
 
         <!-- ═══ HERO LANDING (fullscreen + animation groups) ═══ -->
         <section id="hero" class="hero-landing" aria-labelledby="hero-heading">
-          <div id="hero-canvas" class="hero-canvas" aria-hidden="true"></div>
-          <div class="hero-overlay" aria-hidden="true"></div>
-
           <div class="hero-content mx-auto w-full max-w-6xl px-6 md:px-10">
             <p class="hero-eyebrow">A living registry on Ethereum EVM</p>
 
@@ -90,6 +91,11 @@
             >
               <span id="hero-typewriter" class="hero-typewriter"></span>
             </h1>
+
+            <a href="gallery.html" class="btn-gallery-cta">
+              <span class="btn-gallery-cta-glow" aria-hidden="true"></span>
+              <span class="btn-gallery-cta-label">Visit the SVG gallery ↗</span>
+            </a>
           </div>
 
           <div class="hero-bottom">
@@ -194,7 +200,7 @@
             </div>
 
             <div class="flex flex-wrap gap-6 font-mono text-xs uppercase tracking-widest">
-              <a href="#gallery" class="link-fluor">View your Hashes →</a>
+              <a href="gallery.html" class="link-fluor">View your Hashes →</a>
               <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">OpenSea collection ↗</a>
             </div>
           </div>
@@ -248,8 +254,8 @@
             <p class="section-label">Gallery</p>
             <h2 id="gallery-heading" class="section-title mb-6">On-chain SVG grid</h2>
             <p class="body-text mb-10 max-w-2xl">
-              Every pixel is contract-rendered. Connect your wallet to see your live holdings, or browse
-              the full collection on OpenSea.
+              Every pixel is contract-rendered. Connect your wallet to see your live holdings, or explore
+              the full 3D collection.
             </p>
 
             <div class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12">
@@ -266,6 +272,8 @@
               <div class="gallery-cell hidden md:block"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="0" y="0" width="12" height="12" fill="#DFFF00"/><rect x="12" y="12" width="12" height="12" fill="#DFFF00"/></svg></div>
               <div class="gallery-cell hidden md:block"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="6" y="6" width="4" height="4" fill="#DFFF00"/><rect x="14" y="14" width="4" height="4" fill="#DFFF00"/></svg></div>
             </div>
+
+            <a href="gallery.html" class="btn-secondary mt-10 inline-flex">Open 3D gallery ↗</a>
           </div>
         </section>
 
@@ -382,7 +390,7 @@
       </main>
 
       <!-- ═══ FOOTER ═══ -->
-      <footer class="border-t border-ui bg-void px-6 py-12 md:px-10">
+      <footer class="site-footer-glass border-t border-ui px-6 py-12 md:px-10">
         <div class="mx-auto max-w-6xl">
           <div class="mb-8 flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
             <div>
@@ -398,7 +406,7 @@
 
             <nav class="flex flex-wrap gap-x-8 gap-y-3 font-mono text-xs uppercase tracking-widest" aria-label="Footer navigation">
               <a href="whitepaper.html" class="link-muted">Whitepaper</a>
-              <a href="#gallery" class="link-muted">Gallery</a>
+              <a href="gallery.html" class="link-muted">Gallery</a>
               <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">OpenSea</a>
               <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">X ↗</a>
             </nav>

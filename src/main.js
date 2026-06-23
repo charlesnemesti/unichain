@@ -63,9 +63,11 @@ function initHeroAnimationGroups() {
   heroScene = new THREE.Scene();
   heroScene.background = new THREE.Color(0x000000);
 
-  heroCamera = new THREE.PerspectiveCamera(40, 1, 1, 1000);
-  heroCamera.position.set(50, 50, 100);
-  heroCamera.lookAt(heroScene.position);
+  const gridCenter = new THREE.Vector3(0, 0, 0);
+
+  heroCamera = new THREE.PerspectiveCamera(48, 1, 1, 1000);
+  heroCamera.position.set(48, 38, 88);
+  heroCamera.lookAt(gridCenter);
 
   heroRenderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -142,10 +144,17 @@ function initHeroAnimationGroups() {
 function onHeroResize() {
   if (!heroContainer || !heroCamera || !heroRenderer) return;
 
-  const width = heroContainer.clientWidth;
-  const height = heroContainer.clientHeight;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const aspect = width / height;
 
-  heroCamera.aspect = width / height;
+  heroCamera.aspect = aspect;
+  heroCamera.fov = aspect < 0.85 ? 54 : aspect > 1.6 ? 46 : 50;
+
+  const distance = aspect < 1 ? 102 : 92;
+  heroCamera.position.set(distance * 0.52, distance * 0.4, distance * 0.95);
+  heroCamera.lookAt(0, 0, 0);
+
   heroCamera.updateProjectionMatrix();
   heroRenderer.setSize(width, height, false);
 }
