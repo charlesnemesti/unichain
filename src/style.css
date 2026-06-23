@@ -310,7 +310,6 @@
     color: var(--fluor);
   }
 
-  /* ── Hero landing: fullscreen + Three.js animation groups ── */
   .hero-landing {
     position: relative;
     display: flex;
@@ -398,7 +397,344 @@
     padding-top: 0;
   }
 
-  .header-actions {
-    @apply flex shrink-0 items-center gap-3;
+  /* ── Whitepaper · daemons.life/docs layout ── */
+  .docs-page {
+    --docs-header-h: 4.5rem;
+    --docs-sidebar-w: 15rem;
+    min-height: 100vh;
+    padding-top: var(--docs-header-h);
+    background-color: var(--void);
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      color-mix(in srgb, var(--white) 2%, transparent) 2px,
+      color-mix(in srgb, var(--white) 2%, transparent) 4px
+    );
+  }
+
+  .docs-sidebar {
+    position: fixed;
+    top: var(--docs-header-h);
+    left: 0;
+    z-index: 40;
+    width: var(--docs-sidebar-w);
+    height: calc(100vh - var(--docs-header-h));
+    overflow-y: auto;
+    border-right: 1px solid color-mix(in srgb, var(--fluor) 22%, transparent);
+    background: color-mix(in srgb, var(--void) 96%, var(--fluor) 4%);
+    padding: 1.25rem 1rem;
+  }
+
+  .docs-sidebar-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--fluor) 22%, transparent);
+    font-family: 'Fira Code', 'Space Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fluor);
+    text-shadow: 0 0 12px color-mix(in srgb, var(--fluor) 40%, transparent);
+  }
+
+  .docs-sidebar-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--fluor);
+    box-shadow: 0 0 8px var(--fluor);
+    animation: docs-signal-pulse 2.2s ease-in-out infinite;
+  }
+
+  @keyframes docs-signal-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .docs-sidebar-nav {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 1rem;
+  }
+
+  .docs-nav-link {
+    display: block;
+    padding: 0.45rem 0.5rem;
+    border-left: 2px solid transparent;
+    font-family: 'Fira Code', 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--white) 50%, transparent);
+    transition: color 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  }
+
+  .docs-nav-link:hover {
+    color: var(--fluor);
+    background: color-mix(in srgb, var(--fluor) 6%, transparent);
+  }
+
+  .docs-nav-link.is-active {
+    color: var(--fluor);
+    border-left-color: var(--fluor);
+    background: color-mix(in srgb, var(--fluor) 8%, transparent);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--fluor) 35%, transparent);
+  }
+
+  .docs-main {
+    margin-left: var(--docs-sidebar-w);
+    padding: 2.5rem 1.5rem 5rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .docs-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+    max-width: 42rem;
+  }
+
+  .docs-card {
+    scroll-margin-top: calc(var(--docs-header-h) + 1rem);
+    width: 100%;
+    margin: 0 auto;
+    border: 1px solid color-mix(in srgb, var(--white) 12%, transparent);
+    background: color-mix(in srgb, var(--void) 88%, var(--white) 12%);
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--fluor) 8%, transparent);
+  }
+
+  .docs-hero {
+    padding-top: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .docs-signal-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0 0 1rem;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--fluor) 35%, transparent);
+    background: color-mix(in srgb, var(--fluor) 6%, transparent);
+    font-family: 'Fira Code', 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fluor);
+  }
+
+  .docs-hero h1,
+  .docs-section h2 {
+    margin: 0.5rem 0 0;
+    font-family: VT323, monospace;
+    font-size: clamp(2.25rem, 6vw, 4rem);
+    line-height: 0.95;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--fluor);
+    text-shadow: 0 0 18px color-mix(in srgb, var(--fluor) 30%, transparent);
+  }
+
+  .docs-section h2 {
+    font-size: clamp(1.85rem, 4.5vw, 3rem);
+  }
+
+  .docs-hero p,
+  .docs-section p,
+  .docs-section li,
+  .docs-footer-note {
+    margin: 0;
+    max-width: 100%;
+    font-size: clamp(0.88rem, 1.4vw, 0.98rem);
+    line-height: 1.85;
+    color: color-mix(in srgb, var(--white) 72%, transparent);
+  }
+
+  .docs-hero p,
+  .docs-section > p {
+    margin-top: 1.25rem;
+  }
+
+  .docs-section > p + p {
+    margin-top: 1rem;
+  }
+
+  .docs-accent {
+    color: var(--fluor);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--fluor) 25%, transparent);
+  }
+
+  .docs-list {
+    display: grid;
+    gap: 0.75rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .docs-list li {
+    position: relative;
+    padding-left: 1.1rem;
+    color: color-mix(in srgb, var(--white) 78%, transparent);
+  }
+
+  .docs-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.65em;
+    width: 5px;
+    height: 5px;
+    background: var(--fluor);
+    box-shadow: 0 0 6px var(--fluor);
+  }
+
+  .docs-list--inline li .docs-accent {
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  .docs-table {
+    display: grid;
+    margin-top: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
+  }
+
+  .docs-table--hero {
+    margin-top: 1.75rem;
+  }
+
+  .docs-table-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 1rem;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--white) 8%, transparent);
+    font-family: 'Fira Code', 'Space Mono', monospace;
+    font-size: 0.74rem;
+    line-height: 1.6;
+    letter-spacing: 0.08em;
+  }
+
+  .docs-table-row-wide {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+  }
+
+  .docs-table-row-last {
+    border-bottom: none;
+  }
+
+  .docs-table-key {
+    text-transform: uppercase;
+    color: var(--fluor);
+  }
+
+  .docs-table-val {
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0.02em;
+    color: color-mix(in srgb, var(--white) 78%, transparent);
+  }
+
+  .docs-table--hero .docs-table-key {
+    color: color-mix(in srgb, var(--white) 55%, transparent);
+  }
+
+  .docs-table--hero .docs-table-val {
+    text-align: right;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--fluor);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--fluor) 30%, transparent);
+  }
+
+  .docs-table-row-wide .docs-table-val {
+    color: var(--fluor);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--fluor) 25%, transparent);
+  }
+
+  .docs-code {
+    margin-top: 1.25rem;
+    overflow-x: auto;
+    padding: 1rem;
+    border: 1px solid color-mix(in srgb, var(--fluor) 25%, transparent);
+    background: #000;
+    font-family: 'Fira Code', 'Space Mono', monospace;
+    font-size: 0.76rem;
+    line-height: 1.75;
+    white-space: pre;
+    color: var(--fluor);
+  }
+
+  .docs-footer-note {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: color-mix(in srgb, var(--white) 55%, transparent);
+  }
+
+  .docs-link-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .docs-page code {
+    padding: 0.1em 0.35em;
+    font-size: 0.9em;
+    color: var(--fluor);
+  }
+
+  @media (max-width: 979px) {
+    .docs-page {
+      --docs-sidebar-w: 0px;
+    }
+
+    .docs-sidebar {
+      position: sticky;
+      top: var(--docs-header-h);
+      width: 100%;
+      height: auto;
+      z-index: 30;
+      border-right: none;
+      border-bottom: 1px solid color-mix(in srgb, var(--fluor) 22%, transparent);
+      padding: 0.75rem 1rem 1rem;
+    }
+
+    .docs-sidebar-nav {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-top: 0.75rem;
+      scrollbar-width: thin;
+    }
+
+    .docs-nav-link {
+      flex-shrink: 0;
+      border-left: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.35rem 0.65rem;
+      white-space: nowrap;
+    }
+
+    .docs-nav-link.is-active {
+      border-left: none;
+      border-bottom-color: var(--fluor);
+    }
+
+    .docs-main {
+      margin-left: 0;
+      padding-top: 2rem;
+    }
   }
 }
