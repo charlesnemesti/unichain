@@ -288,6 +288,143 @@
     color: var(--fluor);
   }
 
+  .wallet-dropdown {
+    @apply relative inline-flex;
+  }
+
+  .wallet-dropdown-trigger {
+    @apply inline-flex items-center gap-2;
+  }
+
+  .wallet-dropdown-chevron {
+    @apply hidden text-[10px] leading-none transition-transform duration-200;
+    color: currentColor;
+  }
+
+  .wallet-dropdown--connected .wallet-dropdown-chevron {
+    @apply inline-block;
+  }
+
+  .wallet-dropdown--open .wallet-dropdown-chevron {
+    transform: rotate(180deg);
+  }
+
+  .wallet-dropdown-menu {
+    @apply absolute right-0 top-[calc(100%+0.5rem)] z-50 hidden min-w-[11rem] border bg-void py-1;
+    border-color: color-mix(in srgb, var(--fluor) 35%, transparent);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 0.45);
+  }
+
+  .wallet-dropdown--open .wallet-dropdown-menu {
+    @apply block;
+  }
+
+  .wallet-dropdown--panel .wallet-dropdown-menu {
+    @apply left-0 right-auto;
+  }
+
+  .wallet-dropdown-item {
+    @apply block w-full px-4 py-3 text-left font-mono text-xs uppercase tracking-widest transition-colors;
+    color: var(--white);
+  }
+
+  .wallet-dropdown-item:hover {
+    background: color-mix(in srgb, var(--fluor) 10%, black);
+    color: var(--fluor);
+  }
+
+  .wallet-modal {
+    @apply fixed inset-0 z-[100] flex items-center justify-center px-4;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+
+  .wallet-modal--open {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  body.wallet-modal-open {
+    overflow: hidden;
+  }
+
+  .wallet-modal-backdrop {
+    @apply absolute inset-0;
+    background: rgb(0 0 0 / 0.82);
+    backdrop-filter: blur(4px);
+  }
+
+  .wallet-modal-panel {
+    @apply relative z-10 w-full max-w-md border bg-void p-6 md:p-8;
+    border-color: color-mix(in srgb, var(--fluor) 40%, transparent);
+    box-shadow: 0 0 40px color-mix(in srgb, var(--fluor) 12%, transparent);
+  }
+
+  .wallet-modal-header {
+    @apply mb-4 flex items-center justify-between;
+  }
+
+  .wallet-modal-close {
+    @apply font-mono text-2xl leading-none transition-colors;
+    color: var(--white);
+  }
+
+  .wallet-modal-close:hover {
+    color: var(--fluor);
+  }
+
+  .wallet-modal-title {
+    @apply mb-2 font-terminal text-3xl uppercase text-fluor;
+  }
+
+  .wallet-modal-subtitle {
+    @apply mb-6 font-mono text-xs leading-relaxed text-white;
+  }
+
+  .wallet-options {
+    @apply space-y-3;
+  }
+
+  .wallet-option-btn {
+    @apply flex w-full items-center gap-4 border bg-black px-4 py-3 text-left transition-colors;
+    border-color: color-mix(in srgb, var(--fluor) 25%, transparent);
+  }
+
+  .wallet-option-btn:hover {
+    border-color: var(--fluor);
+    background: color-mix(in srgb, var(--fluor) 8%, black);
+  }
+
+  .wallet-option-icon {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full font-mono text-sm font-bold text-white;
+    background: var(--wallet-accent, var(--fluor));
+  }
+
+  .wallet-option-icon img {
+    @apply h-full w-full object-cover;
+  }
+
+  .wallet-option-copy {
+    @apply flex min-w-0 flex-1 flex-col;
+  }
+
+  .wallet-option-name {
+    @apply font-mono text-sm uppercase tracking-wide text-white;
+  }
+
+  .wallet-option-hint {
+    @apply font-mono text-[10px] uppercase tracking-widest text-fluor;
+  }
+
+  .wallet-option--loading,
+  .wallet-option--empty {
+    @apply border px-4 py-6 text-center font-mono text-xs uppercase tracking-widest text-white;
+    border-color: color-mix(in srgb, var(--fluor) 25%, transparent);
+  }
+
   .panel-box {
     @apply border bg-void p-8 md:p-10;
     border-color: color-mix(in srgb, var(--fluor) 35%, transparent);
@@ -371,6 +508,36 @@
     font-size: clamp(1.875rem, 4.5vw, 4.125rem);
     line-height: 1.1;
     color: var(--white);
+  }
+
+  .hero-typewriter {
+    display: inline;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    white-space: normal;
+  }
+
+  .hero-typewriter-ghost {
+    opacity: 0.55;
+    color: color-mix(in srgb, var(--fluor) 70%, #00ffcc);
+  }
+
+  .hero-typewriter-cursor {
+    display: inline-block;
+    margin-left: 0.06em;
+    color: var(--white);
+    text-shadow:
+      0 0 8px rgb(255 255 255 / 0.85),
+      0 0 18px rgb(255 255 255 / 0.35);
+    animation: hero-cursor-blink 1s step-end infinite;
+  }
+
+  @keyframes hero-cursor-blink {
+    50% {
+      opacity: 0;
+    }
   }
 
   .hero-bottom {

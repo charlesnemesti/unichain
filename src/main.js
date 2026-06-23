@@ -1,12 +1,18 @@
 import './style.css';
 import * as THREE from 'three';
+import { createHackedTypewriter, HERO_TYPEWRITER_TEXT } from './hacked-typewriter.js';
 import {
   connect,
   tryAutoConnect,
   refresh,
   claim,
+  disconnect,
   initWalletListeners,
   contractsConfigured,
+  initWalletModal,
+  openWalletModal,
+  closeWalletDropdowns,
+  initWalletDropdown,
 } from './web3/index.js';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -28,6 +34,27 @@ let heroClock;
 let heroContainer = null;
 /** @type {number | null} */
 let heroAnimationId = null;
+
+/** @type {ReturnType<typeof createHackedTypewriter> | null} */
+let heroTypewriter = null;
+
+function initHeroTypewriter() {
+  const element = document.getElementById('hero-typewriter');
+  if (!element) return;
+
+  heroTypewriter?.dispose();
+  heroTypewriter = createHackedTypewriter(element, {
+    text: HERO_TYPEWRITER_TEXT,
+    cycleMs: 10000,
+    scrambleTicks: 4,
+  });
+  heroTypewriter.start();
+}
+
+function disposeHeroTypewriter() {
+  heroTypewriter?.dispose();
+  heroTypewriter = null;
+}
 
 function initHeroAnimationGroups() {
   heroContainer = document.getElementById('hero-canvas');
@@ -165,7 +192,11 @@ const state = {
 const $ = (id) => document.getElementById(id);
 
 const btnConnectHeader = $('btn-connect-header');
+const btnConnectHeaderLabel = $('btn-connect-header-label');
 const btnConnectWallet = $('btn-connect-wallet');
+const btnConnectWalletLabel = $('btn-connect-wallet-label');
+const walletDropdownHeader = $('wallet-dropdown-header');
+const walletDropdownPanel = $('wallet-dropdown-panel');
 const btnClaim = $('btn-claim');
 const statusText = $('status-text');
 const walletTerminalLine = $('wallet-terminal-line');
@@ -221,17 +252,25 @@ function clearConnection() {
   state.claimableEth = 0;
 }
 
+/** @type {ReturnType<typeof initWalletDropdown> | null} */
+let headerDropdown = null;
+
+/** @type {ReturnType<typeof initWalletDropdown> | null} */
+let panelDropdown = null;
+
 function updateUI() {
   const busy = state.claiming || state.refreshing;
   const connectLabel = state.connected && state.address
     ? truncateAddress(state.address)
     : 'Connect';
 
-  btnConnectHeader.textContent = connectLabel;
-  btnConnectWallet.textContent = state.connected ? 'Connected' : 'Connect';
+  headerDropdown?.setLabel(connectLabel);
+  panelDropdown?.setLabel(connectLabel);
+  headerDropdown?.setConnected(state.connected);
+  panelDropdown?.setConnected(state.connected);
 
   btnConnectHeader.disabled = busy;
-  btnConnectWallet.disabled = busy || state.connected;
+  btnConnectWallet.disabled = busy;
   btnClaim.disabled = !state.connected || busy || state.claimableEth <= 0;
 
   if (state.connected) {
@@ -253,14 +292,34 @@ function updateUI() {
   }
 }
 
-async function connectWallet() {
-  if (state.connected || state.claiming) return;
+function openConnectModal() {
+  if (state.claiming) return;
+  closeWalletDropdowns();
+  openWalletModal();
+}
 
+function changeWallet() {
+  if (state.claiming) return;
+  closeWalletDropdowns();
+  openWalletModal();
+}
+
+async function handleDisconnect() {
+  if (state.claiming) return;
+
+  disconnect();
+  clearConnection();
+  closeWalletDropdowns();
+  setStatus('Wallet disconnected.', 'neutral');
+  updateUI();
+}
+
+async function connectWithProvider(provider, rdns) {
   setStatus('Requesting wallet connection...', 'warn');
   walletStatus.textContent = 'Connecting';
 
   try {
-    const { address, balances } = await connect();
+    const { address, balances } = await connect(provider, rdns);
     applyConnection(address, balances);
 
     if (!contractsConfigured()) {
@@ -303,9 +362,7 @@ async function claimRewards() {
 
 async function handleAccountChange(address) {
   if (!address) {
-    clearConnection();
-    setStatus('Wallet disconnected.', 'neutral');
-    updateUI();
+    await handleDisconnect();
     return;
   }
 
@@ -359,10 +416,36 @@ function initHeroStats() {
 }
 
 function initWeb3UI() {
-  btnConnectHeader.addEventListener('click', connectWallet);
-  btnConnectWallet.addEventListener('click', connectWallet);
+  const dropdownOptions = {
+    isConnected: () => state.connected,
+    onConnect: openConnectModal,
+    onChangeWallet: changeWallet,
+    onDisconnect: handleDisconnect,
+  };
+
+  if (walletDropdownHeader && btnConnectHeader && btnConnectHeaderLabel) {
+    headerDropdown = initWalletDropdown({
+      root: walletDropdownHeader,
+      trigger: btnConnectHeader,
+      label: btnConnectHeaderLabel,
+      menu: walletDropdownHeader.querySelector('.wallet-dropdown-menu'),
+      ...dropdownOptions,
+    });
+  }
+
+  if (walletDropdownPanel && btnConnectWallet && btnConnectWalletLabel) {
+    panelDropdown = initWalletDropdown({
+      root: walletDropdownPanel,
+      trigger: btnConnectWallet,
+      label: btnConnectWalletLabel,
+      menu: walletDropdownPanel.querySelector('.wallet-dropdown-menu'),
+      ...dropdownOptions,
+    });
+  }
+
   btnClaim.addEventListener('click', claimRewards);
 
+  initWalletModal(connectWithProvider);
   initWalletListeners(handleAccountChange);
   tryRestoreSession();
 
@@ -375,9 +458,13 @@ function initWeb3UI() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 initHeroAnimationGroups();
+initHeroTypewriter();
 initWeb3UI();
 
 // Optional cleanup if hot-reloaded in dev
 if (import.meta.hot) {
-  import.meta.hot.dispose(() => disposeHeroAnimation());
+  import.meta.hot.dispose(() => {
+    disposeHeroAnimation();
+    disposeHeroTypewriter();
+  });
 }

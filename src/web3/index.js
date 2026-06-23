@@ -12,5 +12,7 @@ export {
 
 export { readWalletBalances, readOwnedTokenIds } from './reads.js';
 export { getPublicClient, hasWalletProvider } from './provider.js';
+export { initWalletModal, openWalletModal, closeWalletModal } from './wallet-modal.js';
+export { initWalletDropdown, closeWalletDropdowns } from './wallet-dropdown.js';
 export { CONTRACTS } from '../config/contracts.js';
 export { chainId, explorerUrl, targetChain } from '../config/chain.js';

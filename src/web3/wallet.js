@@ -1,7 +1,20 @@
 import { chainId, targetChain } from '../config/chain.js';
 import { contractsConfigured } from '../config/contracts.js';
-import { getWalletClient, hasWalletProvider } from './provider.js';
+import {
+  getActiveProvider,
+  getWalletClient,
+  hasWalletProvider,
+  onActiveProviderChange,
+  setActiveProvider,
+} from './provider.js';
 import { readWalletBalances } from './reads.js';
+import {
+  getProviderByRdns,
+  getRememberedWalletRdns,
+  rememberWalletChoice,
+  clearRememberedWallet,
+  startWalletDiscovery,
+} from './wallets.js';
 import { claimRewards as claimOnChain } from './writes.js';
 
 /** @type {`0x${string}` | null} */
@@ -10,20 +23,47 @@ let connectedAddress = null;
 /** @type {((address: `0x${string}` | null) => void) | null} */
 let onAccountsChanged = null;
 
-let listenersBound = false;
+/** @type {import('viem').EIP1193Provider | null} */
+let listeningProvider = null;
 
-export function getConnectedAddress() {
-  return connectedAddress;
+/** @param {import('viem').EIP1193Provider} provider */
+function handleAccountsChanged(accounts) {
+  const next = accounts[0] ?? null;
+  connectedAddress = next;
+  onAccountsChanged?.(next);
 }
 
-export function isConnected() {
-  return connectedAddress !== null;
+/** @param {import('viem').EIP1193Provider | null} provider */
+function bindProviderListeners(provider) {
+  if (!provider || provider === listeningProvider) return;
+
+  if (listeningProvider?.removeListener) {
+    listeningProvider.removeListener('accountsChanged', handleAccountsChanged);
+    listeningProvider.removeListener('chainChanged', reloadOnChainChange);
+  }
+
+  listeningProvider = provider;
+  provider.on?.('accountsChanged', handleAccountsChanged);
+  provider.on?.('chainChanged', reloadOnChainChange);
 }
+
+function reloadOnChainChange() {
+  window.location.reload();
+}
+
+onActiveProviderChange(bindProviderListeners);
 
 /**
+ * @param {import('viem').EIP1193Provider} [provider]
+ * @param {string} [rdns]
  * @returns {Promise<{ address: `0x${string}`, balances: import('./reads.js').WalletBalances }>}
  */
-export async function connect() {
+export async function connect(provider, rdns) {
+  if (provider) {
+    setActiveProvider(provider);
+    if (rdns) rememberWalletChoice(rdns);
+  }
+
   if (!hasWalletProvider()) {
     throw new Error('No wallet detected. Install MetaMask or another Web3 wallet.');
   }
@@ -36,16 +76,24 @@ export async function connect() {
   if (!address) throw new Error('No account returned from wallet');
 
   connectedAddress = address;
-  const balances = await readWalletBalances(address);
+  bindProviderListeners(getActiveProvider());
 
+  const balances = await readWalletBalances(address);
   return { address, balances };
 }
 
 /**
- * Silent reconnect via eth_accounts (no popup).
  * @returns {Promise<{ address: `0x${string}`, balances: import('./reads.js').WalletBalances } | null>}
  */
 export async function tryAutoConnect() {
+  startWalletDiscovery();
+
+  const remembered = getRememberedWalletRdns();
+  if (remembered) {
+    const provider = getProviderByRdns(remembered);
+    if (provider) setActiveProvider(provider);
+  }
+
   if (!hasWalletProvider()) return null;
 
   try {
@@ -58,6 +106,8 @@ export async function tryAutoConnect() {
     if (walletChainId !== chainId) return null;
 
     connectedAddress = address;
+    bindProviderListeners(getActiveProvider());
+
     const balances = await readWalletBalances(address);
     return { address, balances };
   } catch {
@@ -65,8 +115,17 @@ export async function tryAutoConnect() {
   }
 }
 
-export async function disconnect() {
+export function disconnect() {
   connectedAddress = null;
+  clearRememberedWallet();
+  setActiveProvider(null);
+
+  if (listeningProvider?.removeListener) {
+    listeningProvider.removeListener('accountsChanged', handleAccountsChanged);
+    listeningProvider.removeListener('chainChanged', reloadOnChainChange);
+  }
+
+  listeningProvider = null;
 }
 
 /**
@@ -94,23 +153,24 @@ export async function claim(address = connectedAddress) {
 }
 
 async function ensureCorrectChain() {
+  const provider = getActiveProvider();
   const walletClient = getWalletClient();
   const currentChainId = await walletClient.getChainId();
 
   if (currentChainId === chainId) return;
 
-  if (!window.ethereum) throw new Error('No wallet provider');
+  if (!provider) throw new Error('No wallet provider');
 
   const hexChainId = `0x${chainId.toString(16)}`;
 
   try {
-    await window.ethereum.request({
+    await provider.request({
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: hexChainId }],
     });
   } catch (error) {
     if (error?.code === 4902) {
-      await window.ethereum.request({
+      await provider.request({
         method: 'wallet_addEthereumChain',
         params: [
           {
@@ -135,20 +195,16 @@ async function ensureCorrectChain() {
  * @param {(address: `0x${string}` | null) => void | Promise<void>} onChange
  */
 export function initWalletListeners(onChange) {
-  if (!window.ethereum || listenersBound) return;
-
   onAccountsChanged = onChange;
-  listenersBound = true;
+  bindProviderListeners(getActiveProvider());
+}
 
-  window.ethereum.on('accountsChanged', async (accounts) => {
-    const next = accounts[0] ?? null;
-    connectedAddress = next;
-    await onAccountsChanged?.(next);
-  });
+export function getConnectedAddress() {
+  return connectedAddress;
+}
 
-  window.ethereum.on('chainChanged', () => {
-    window.location.reload();
-  });
+export function isConnected() {
+  return connectedAddress !== null;
 }
 
 export { contractsConfigured };

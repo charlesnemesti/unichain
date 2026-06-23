@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Docs page — isolated from landing styles to avoid HMR / bundle coupling */
+@layer base {
+  html {
+    @apply bg-zinc-950 text-zinc-300;
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply min-h-screen bg-zinc-950 font-mono antialiased;
+  }
+
+  ::selection {
+    background-color: #dfff00;
+    color: #000000;
+  }
+}
