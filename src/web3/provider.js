@@ -1,5 +1,5 @@
-import { createPublicClient, createWalletClient, custom, http } from 'viem';
-import { chainId, rpcUrl, targetChain } from '../config/chain.js';
+import { createPublicClient, createWalletClient, custom, fallback, http } from 'viem';
+import { chainId, publicRpcUrls, targetChain } from '../config/chain.js';
 
 /** @type {import('viem').PublicClient | null} */
 let publicClient = null;
@@ -34,7 +34,14 @@ export function getPublicClient() {
   if (!publicClient) {
     publicClient = createPublicClient({
       chain: targetChain,
-      transport: http(rpcUrl),
+      transport: fallback(
+        publicRpcUrls.map((url) =>
+          http(url, {
+            timeout: 12_000,
+            retryCount: 1,
+          }),
+        ),
+      ),
     });
   }
   return publicClient;

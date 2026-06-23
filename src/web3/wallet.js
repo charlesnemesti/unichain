@@ -1,4 +1,4 @@
-import { chainId, targetChain } from '../config/chain.js';
+import { chainId, rpcUrl, targetChain } from '../config/chain.js';
 import { contractsConfigured } from '../config/contracts.js';
 import {
   getActiveProvider,
@@ -177,7 +177,7 @@ async function ensureCorrectChain() {
             chainId: hexChainId,
             chainName: targetChain.name,
             nativeCurrency: targetChain.nativeCurrency,
-            rpcUrls: [targetChain.rpcUrls.default.http[0]],
+            rpcUrls: [rpcUrl],
             blockExplorerUrls: targetChain.blockExplorers
               ? [targetChain.blockExplorers.default.url]
               : undefined,

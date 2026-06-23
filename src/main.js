@@ -219,6 +219,20 @@ const statBalance = $('stat-balance');
 const statOwned = $('stat-owned');
 const statClaimable = $('stat-claimable');
 
+function formatWalletError(error) {
+  const message = error?.shortMessage ?? error?.message ?? 'Connection failed.';
+
+  if (message.includes('Failed to fetch') || message.includes('HTTP request failed')) {
+    return 'RPC unreachable. Retrying with public endpoints — check your network and try again.';
+  }
+
+  if (message.length > 160) {
+    return `${message.slice(0, 157)}…`;
+  }
+
+  return message;
+}
+
 function setStatus(message, tone = 'neutral') {
   const tones = {
     neutral: 'text-white',
@@ -347,7 +361,7 @@ async function connectWithProvider(provider, rdns) {
     updateUI();
   } catch (error) {
     console.error('[UniHash] Wallet connection failed:', error);
-    setStatus(error?.message ?? 'Connection rejected. Retry when ready.', 'error');
+    setStatus(formatWalletError(error), 'error');
     walletStatus.textContent = 'Idle';
   }
 }

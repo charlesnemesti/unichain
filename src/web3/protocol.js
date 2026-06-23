@@ -1,8 +1,9 @@
 import { formatEther, formatUnits, zeroAddress } from 'viem';
 import { unihashAbi } from '../abis/unihash.js';
-import { generateHashSvg } from '../hash-svgs.js';
+import { BASE_HASH_SVGS, generateHashSvg } from '../hash-svgs.js';
 import { CONTRACTS, contractsConfigured, isDeployed } from '../config/contracts.js';
 import { getPublicClient } from './provider.js';
+import { parseInnerSvgFromTokenUri } from './token-uri.js';
 
 const MULTICALL_CHUNK = 80;
 const HOLDERS_CHUNK = 200;
@@ -17,6 +18,27 @@ function contractAddress() {
 
 function shortenAddress(address) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+/**
+ * Prefer on-chain tokenURI SVG; fall back to curated / procedural patterns.
+ * @param {number} tokenId
+ * @param {string} [tokenUri]
+ */
+function resolveHashSvgMarkup(tokenId, tokenUri) {
+  if (tokenUri) {
+    try {
+      return parseInnerSvgFromTokenUri(tokenUri);
+    } catch (error) {
+      console.warn(`[UniHash] tokenURI parse failed for #${tokenId}:`, error);
+    }
+  }
+
+  if (tokenId >= 1 && tokenId <= BASE_HASH_SVGS.length) {
+    return BASE_HASH_SVGS[tokenId - 1];
+  }
+
+  return generateHashSvg(tokenId * 97 + 13);
 }
 
 /**
@@ -165,7 +187,7 @@ async function loadHashesForTokenIds(tokenIds) {
   if (!address || tokenIds.length === 0) return [];
 
   const client = getPublicClient();
-  /** @type {{ tokenId: number, owner: `0x${string}`, seed: bigint }[]} */
+  /** @type {{ tokenId: number, owner: `0x${string}`, tokenUri?: string }[]} */
   const raw = [];
 
   for (let offset = 0; offset < tokenIds.length; offset += MULTICALL_CHUNK) {
@@ -180,7 +202,7 @@ async function loadHashesForTokenIds(tokenIds) {
       {
         address,
         abi: unihashAbi,
-        functionName: 'seedOf',
+        functionName: 'tokenURI',
         args: [BigInt(tokenId)],
       },
     ]);
@@ -189,13 +211,13 @@ async function loadHashesForTokenIds(tokenIds) {
 
     chunk.forEach((tokenId, index) => {
       const owner = results[index * 2]?.result;
-      const seed = results[index * 2 + 1]?.result;
+      const tokenUri = results[index * 2 + 1]?.result;
       if (!owner) return;
 
       raw.push({
         tokenId,
         owner,
-        seed: seed ?? BigInt(tokenId * 97 + 13),
+        tokenUri,
       });
     });
   }
@@ -222,7 +244,7 @@ async function loadHashesForTokenIds(tokenIds) {
     hashId: `#${String(entry.tokenId).padStart(4, '0')}`,
     owner: entry.owner,
     ownerShort: shortenAddress(entry.owner),
-    svg: generateHashSvg(Number(entry.seed)),
+    svg: resolveHashSvgMarkup(entry.tokenId, entry.tokenUri),
     claimableEth: Number.parseFloat(
       formatEther(claimableByOwner.get(entry.owner.toLowerCase()) ?? 0n),
     ),
