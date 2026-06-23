@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="UniHash — Hold $HASH, spawn 100% on-chain SVG NFTs. EVM-native renderer & Base64 core."
+    />
+    <title>UniHash · $HASH · 100% On-Chain SVG Art</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Space+Mono:wght@400;700&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-void text-white">
+    <div class="relative z-10 flex min-h-screen flex-col bg-void">
+
+      <!-- ═══ HEADER / NAV ═══ -->
+      <header class="fixed top-0 left-0 right-0 z-50 border-b border-ui bg-void">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 md:px-10">
+          <a href="#" class="shrink-0 font-terminal text-2xl uppercase tracking-[0.12em] text-fluor md:text-3xl">
+            UniHash <span class="text-fluor">$HASH</span>
+          </a>
+
+          <nav class="hidden items-center gap-6 lg:flex" aria-label="Main navigation">
+            <a href="#how-it-works" class="nav-link">How it works</a>
+            <a href="#the-hash" class="nav-link">Hashes</a>
+            <a href="#tokenomics" class="nav-link">Tokenomics</a>
+            <a href="#gallery" class="nav-link">Gallery</a>
+            <a href="#whitepaper" class="nav-link">Whitepaper</a>
+          </nav>
+
+          <div class="flex shrink-0 items-center gap-3">
+            <a href="#wallet" class="btn-primary hidden sm:inline-flex">Buy $HASH ↗</a>
+            <button id="btn-connect-header" type="button" class="btn-terminal" aria-label="Connect wallet">
+              Connect
+            </button>
+          </div>
+        </div>
+
+        <nav class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-ui px-6 py-3 lg:hidden" aria-label="Mobile navigation">
+          <a href="#wallet" class="btn-primary text-[10px] sm:hidden">Buy $HASH ↗</a>
+          <a href="#how-it-works" class="nav-link text-xs">How it works</a>
+          <a href="#the-hash" class="nav-link text-xs">Hashes</a>
+          <a href="#tokenomics" class="nav-link text-xs">Tokenomics</a>
+          <a href="#gallery" class="nav-link text-xs">Gallery</a>
+          <a href="#whitepaper" class="nav-link text-xs">Whitepaper</a>
+        </nav>
+      </header>
+
+      <main class="site-main bg-void">
+
+        <!-- ═══ HERO LANDING (fullscreen + animation groups) ═══ -->
+        <section id="hero" class="hero-landing" aria-labelledby="hero-heading">
+          <div id="hero-canvas" class="hero-canvas" aria-hidden="true"></div>
+          <div class="hero-overlay" aria-hidden="true"></div>
+
+          <div class="hero-content mx-auto w-full max-w-6xl px-6 md:px-10">
+            <p class="hero-eyebrow">A living registry on Ethereum EVM</p>
+
+            <h1 id="hero-heading" class="hero-title">
+              Hold $HASH and spawn living NFTs<br />
+              rendered fully on-chain
+            </h1>
+          </div>
+
+          <div class="hero-bottom">
+            <div class="hero-stats font-mono text-xs uppercase tracking-widest text-white">
+              <span><span class="hero-stat-num" id="stat-hashes">·</span> Hashes alive</span>
+              <span><span class="hero-stat-num" id="stat-holders">·</span> holders</span>
+              <span><span class="hero-stat-num" id="stat-spawned">·</span> blocks spawned</span>
+            </div>
+
+            <a href="#how-it-works" class="scroll-hint" aria-label="Scroll down">Scroll</a>
+          </div>
+        </section>
+
+        <!-- ═══ HOW IT WORKS ═══ -->
+        <section id="how-it-works" class="section-pad border-b border-ui" aria-labelledby="how-heading">
+          <div class="mx-auto max-w-6xl px-6 md:px-10">
+            <p class="section-label">How it works</p>
+            <h2 id="how-heading" class="section-title mb-8">
+              Buy the token and a Hash appears, drawn on-chain
+            </h2>
+
+            <p class="body-text mb-16 max-w-3xl md:text-base">
+              You buy $HASH on Uniswap the way you would any coin, and once you are holding 3,000 a living
+              Hash NFT mints itself straight to your wallet — 24×24 SVG art and all. Every Hash is drawn by
+              contracts on Ethereum, with no server, no IPFS, and no mint page to visit.
+            </p>
+
+            <div class="grid gap-8 md:grid-cols-3">
+              <article class="step-card">
+                <span class="step-number">01</span>
+                <h3 class="step-title">Buy $HASH</h3>
+                <p class="step-body">
+                  You swap ETH for $HASH on Uniswap the same way you would buy any other coin, with no mint
+                  button and no separate app to deal with.
+                </p>
+              </article>
+
+              <article class="step-card">
+                <span class="step-number">02</span>
+                <h3 class="step-title">Hold 3,000, get a Hash</h3>
+                <p class="step-body">
+                  The moment you are holding 3,000 $HASH a living Hash appears in your wallet, and every
+                  extra 3,000 brings another one along. Sell back below the line and it quietly returns.
+                </p>
+              </article>
+
+              <article class="step-card">
+                <span class="step-number">03</span>
+                <h3 class="step-title">It lives on-chain forever</h3>
+                <p class="step-body">
+                  Each Hash is a 24×24 SVG rendered by smart contracts via Base64 JSON. Its look is read
+                  from the chain, so it shifts as you hold and seal it. Sealing locks the art for good.
+                </p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══ THE HASH ═══ -->
+        <section id="the-hash" class="section-pad border-b border-ui" aria-labelledby="hash-heading">
+          <div class="mx-auto max-w-6xl px-6 md:px-10">
+            <p class="section-label">The Hash</p>
+            <h2 id="hash-heading" class="section-title mb-4">
+              A living NFT, drawn fully on-chain
+            </h2>
+            <p class="body-text mb-12 max-w-3xl">
+              Every Hash is drawn by contracts on Ethereum rather than a server, and its look is read from
+              the chain, so it shifts as you hold and seal it. Sealing one locks it for good and preserves
+              the <span class="text-fluor">frozen tokenURI</span> permanently on-chain.
+            </p>
+
+            <div class="mb-10 grid gap-4 md:grid-cols-3">
+              <article class="hash-card hash-card--live">
+                <div class="hash-preview" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="h-full w-full"><rect width="24" height="24" fill="#000"/><rect x="4" y="4" width="4" height="4" fill="#DFFF00"/><rect x="12" y="8" width="4" height="4" fill="#DFFF00"/><rect x="8" y="16" width="8" height="4" fill="#DFFF00"/></svg>
+                </div>
+                <div>
+                  <p class="hash-name">genesis_subnet#0001</p>
+                  <p class="hash-status hash-status--active">Live · objectURI</p>
+                </div>
+              </article>
+
+              <article class="hash-card hash-card--sealed">
+                <div class="hash-preview" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="h-full w-full"><rect width="24" height="24" fill="#000"/><rect x="2" y="2" width="20" height="20" fill="none" stroke="#DFFF00" stroke-width="1"/><rect x="6" y="6" width="12" height="12" fill="#DFFF00" opacity="0.6"/></svg>
+                </div>
+                <div>
+                  <p class="hash-name">cipher_block#0042</p>
+                  <p class="hash-status hash-status--active">Sealed · frozen tokenURI</p>
+                </div>
+              </article>
+
+              <article class="hash-card hash-card--dormant">
+                <div class="hash-preview hash-preview--dim" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="h-full w-full"><rect width="24" height="24" fill="#000"/><rect x="10" y="10" width="4" height="4" fill="#DFFF00" opacity="0.25"/></svg>
+                </div>
+                <div>
+                  <p class="hash-name">null_hash#0000</p>
+                  <p class="hash-status text-white">Dormant · below 3,000</p>
+                </div>
+              </article>
+            </div>
+
+            <div class="flex flex-wrap gap-6 font-mono text-xs uppercase tracking-widest">
+              <a href="#gallery" class="link-fluor">View your Hashes →</a>
+              <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">OpenSea collection ↗</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══ TOKENOMICS ═══ -->
+        <section id="tokenomics" class="section-pad border-b border-ui" aria-labelledby="tokenomics-heading">
+          <div class="mx-auto max-w-6xl px-6 md:px-10">
+            <p class="section-label">Tokenomics</p>
+
+            <div class="panel-box mb-12">
+              <p class="label-text mb-2">Total supply</p>
+              <p class="font-terminal text-5xl text-fluor md:text-6xl">21,000,000</p>
+              <p class="mt-2 font-mono text-sm text-fluor">$HASH · fixed forever</p>
+              <p class="body-text mt-6 max-w-2xl">
+                It launched fairly, with the whole supply paired into the pool against 1 ETH and nothing
+                held back for a team.
+              </p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+              <div class="stat-cell">
+                <p class="stat-cell-label">1 Hash for every</p>
+                <p class="stat-cell-value">3,000 $HASH</p>
+              </div>
+              <div class="stat-cell">
+                <p class="stat-cell-label">Max per buy</p>
+                <p class="stat-cell-value">0.1% of supply</p>
+              </div>
+              <div class="stat-cell">
+                <p class="stat-cell-label">Max per wallet</p>
+                <p class="stat-cell-value">2% of supply</p>
+              </div>
+              <div class="stat-cell">
+                <p class="stat-cell-label">Swap fee → protocol</p>
+                <p class="stat-cell-value">4%</p>
+              </div>
+            </div>
+
+            <p class="body-text mt-8 max-w-3xl">
+              That 4% fee funds on-chain rendering infrastructure and spawn-block metadata indexing.
+              Every Hash carries its spawn block permanently in the contract state. The full mechanics
+              live in the <a href="#whitepaper" class="link-fluor">whitepaper</a>.
+            </p>
+          </div>
+        </section>
+
+        <!-- ═══ GALLERY ═══ -->
+        <section id="gallery" class="section-pad border-b border-ui" aria-labelledby="gallery-heading">
+          <div class="mx-auto max-w-6xl px-6 md:px-10">
+            <p class="section-label">Gallery</p>
+            <h2 id="gallery-heading" class="section-title mb-6">On-chain SVG grid</h2>
+            <p class="body-text mb-10 max-w-2xl">
+              Every pixel is contract-rendered. Connect your wallet to see your live holdings, or browse
+              the full collection on OpenSea.
+            </p>
+
+            <div class="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-12">
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="2" y="2" width="6" height="6" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="8" y="4" width="8" height="4" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="4" y="8" width="4" height="8" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="12" y="12" width="8" height="8" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="0" y="16" width="24" height="4" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="10" y="0" width="4" height="24" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="6" y="6" width="12" height="12" fill="none" stroke="#DFFF00" stroke-width="1"/></svg></div>
+              <div class="gallery-cell"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="2" y="10" width="20" height="4" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell hidden sm:block"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="4" y="4" width="16" height="16" fill="#DFFF00" opacity="0.5"/></svg></div>
+              <div class="gallery-cell hidden sm:block"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="8" y="2" width="8" height="20" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell hidden md:block"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="0" y="0" width="12" height="12" fill="#DFFF00"/><rect x="12" y="12" width="12" height="12" fill="#DFFF00"/></svg></div>
+              <div class="gallery-cell hidden md:block"><svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#000"/><rect x="6" y="6" width="4" height="4" fill="#DFFF00"/><rect x="14" y="14" width="4" height="4" fill="#DFFF00"/></svg></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══ WHITEPAPER ═══ -->
+        <section id="whitepaper" class="section-pad border-b border-ui" aria-labelledby="whitepaper-heading">
+          <div class="mx-auto max-w-6xl px-6 md:px-10">
+            <p class="section-label">Whitepaper</p>
+            <h2 id="whitepaper-heading" class="section-title mb-6">unihash_architecture</h2>
+
+            <div class="panel-box">
+              <p class="label-text mb-2">// protocol_manifest</p>
+              <p class="body-text mb-6">EVM-Native SVG Renderer &amp; Base64 Core</p>
+
+              <ul class="mb-8 space-y-3 font-mono text-sm text-white">
+                <li class="flex items-start gap-3">
+                  <span class="bullet-square" aria-hidden="true"></span>
+                  <span>24×24 SVG art + base64 JSON embedded in contract bytecode</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="bullet-square" aria-hidden="true"></span>
+                  <span>Live objectURI / frozen tokenURI state machine</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="bullet-square" aria-hidden="true"></span>
+                  <span>Spawn block metadata written at mint time</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="bullet-square" aria-hidden="true"></span>
+                  <span>Threshold mint: 3,000 $HASH per living Hash NFT</span>
+                </li>
+                <li class="flex items-start gap-3">
+                  <span class="bullet-square" aria-hidden="true"></span>
+                  <span>Zero off-chain dependencies — verifiable on Etherscan</span>
+                </li>
+              </ul>
+
+              <a href="#" class="btn-secondary">Read whitepaper ↗</a>
+            </div>
+          </div>
+        </section>
+
+        <!-- ═══ WALLET / MINT ═══ -->
+        <section id="wallet" class="section-pad" aria-labelledby="wallet-heading">
+          <div class="mx-auto max-w-6xl px-6 md:px-10">
+            <p class="section-label">Your wallet</p>
+            <h2 id="wallet-heading" class="section-title mb-6">See your Hashes and spawn on-chain</h2>
+            <p class="body-text mb-10 max-w-2xl">
+              Connect a wallet to read your live holdings, and use the spawn panel to mint additional
+              Hashes directly from the contract.
+            </p>
+
+            <div class="grid gap-8 lg:grid-cols-2">
+              <div class="wallet-panel">
+                <p class="label-text mb-6">unihash · wallet</p>
+
+                <p id="wallet-terminal-line" class="mb-8 font-mono text-sm text-white">
+                  &gt; awaiting connection…
+                </p>
+
+                <dl class="wallet-stats">
+                  <div class="wallet-stat-row">
+                    <dt>$HASH balance</dt>
+                    <dd id="stat-balance">·</dd>
+                  </div>
+                  <div class="wallet-stat-row">
+                    <dt>Hashes</dt>
+                    <dd id="stat-owned">·</dd>
+                  </div>
+                  <div class="wallet-stat-row">
+                    <dt>Spawn block</dt>
+                    <dd id="stat-spawn-block">·</dd>
+                  </div>
+                  <div class="wallet-stat-row">
+                    <dt>Status</dt>
+                    <dd id="wallet-status" class="text-white">Idle</dd>
+                  </div>
+                </dl>
+
+                <div class="mt-8 flex flex-wrap gap-4">
+                  <button id="btn-connect-wallet" type="button" class="btn-primary">Connect</button>
+                  <button id="btn-seal" type="button" class="btn-secondary" disabled>Seal Hash</button>
+                </div>
+              </div>
+
+              <div class="wallet-panel">
+                <p class="label-text mb-6">spawn_terminal</p>
+
+                <div class="mb-8 flex items-center justify-between">
+                  <span class="label-text">quantity</span>
+                  <div class="flex items-center gap-4" role="group" aria-label="Mint quantity">
+                    <button id="btn-qty-minus" type="button" class="qty-btn" aria-label="Decrease quantity">-</button>
+                    <span id="qty-display" class="min-w-[2ch] text-center font-terminal text-3xl text-fluor" aria-live="polite">1</span>
+                    <button id="btn-qty-plus" type="button" class="qty-btn" aria-label="Increase quantity">+</button>
+                  </div>
+                </div>
+
+                <button id="btn-spawn" type="button" class="btn-spawn mb-6" disabled aria-label="Spawn UniHash tokens">
+                  [ SPAWN $HASH ]
+                </button>
+
+                <p class="border-t border-ui pt-4 font-mono text-xs" aria-live="polite">
+                  <span class="text-fluor">Status:</span>
+                  <span id="status-text" class="text-white">Idle. Awaiting connection...</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- ═══ FOOTER ═══ -->
+      <footer class="border-t border-ui bg-void px-6 py-12 md:px-10">
+        <div class="mx-auto max-w-6xl">
+          <div class="mb-8 flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+            <div>
+              <p class="mb-3 font-terminal text-2xl text-fluor">uniHash</p>
+              <p class="max-w-sm font-mono text-xs leading-relaxed text-white">
+                A coin you hold to spawn living on-chain SVG art, with a Hash NFT for every 3,000 you keep.
+                Fully verifiable on Ethereum. Nothing here is financial advice.
+              </p>
+            </div>
+
+            <nav class="flex flex-wrap gap-x-8 gap-y-3 font-mono text-xs uppercase tracking-widest" aria-label="Footer navigation">
+              <a href="#whitepaper" class="link-muted">Whitepaper</a>
+              <a href="#gallery" class="link-muted">Gallery</a>
+              <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">OpenSea</a>
+              <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">X ↗</a>
+            </nav>
+          </div>
+
+          <p class="border-t border-ui pt-6 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-fluor">
+            © 2026 UniHash · on-chain &amp; verifiable · $HASH
+          </p>
+        </div>
+      </footer>
+
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
