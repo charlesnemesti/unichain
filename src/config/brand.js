@@ -15,7 +15,7 @@ export const HERO_ARIA_LABEL =
 export const TAGLINE =
   'An Ethereum ERC-20 with buy/sell burn mechanics, structured for a future external molecular Chain NFT layer.';
 
-export const TWITTER_URL = 'https://x.com/Unihash_';
+export const TWITTER_URL = 'https://x.com/UniChainV4';
 export const GALLERY_CTA = 'Enter the molecular lab ↗';
 
 export const STORAGE_PREFIX = 'unichain';

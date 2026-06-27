@@ -46,7 +46,7 @@
 
           <div class="flex shrink-0 items-center gap-3 justify-self-end">
             <a
-              href="https://x.com/Unihash_"
+              href="https://x.com/UniChainV4"
               class="btn-twitter"
               target="_blank"
               rel="noopener noreferrer"
@@ -185,7 +185,7 @@
               <div class="lab-menu-stats">
                 <span><strong class="hero-stat-num" id="stat-hashes">·</strong> current supply</span>
                 <span><strong class="hero-stat-num" id="stat-holders">·</strong> burn hook</span>
-                <span><strong class="hero-stat-num" id="stat-spawned">·</strong> burned</span>
+                <span><strong class="hero-stat-num hero-stat-num--red" id="stat-spawned">·</strong> burned</span>
                 <p id="hero-stats-launch" class="hero-stats-launch" aria-live="polite"></p>
               </div>
 
@@ -205,7 +205,7 @@
           <div class="mx-auto max-w-6xl px-6 md:px-10">
             <p class="section-label">How it works</p>
             <h2 id="how-heading" class="section-title mb-8">
-              Buy the token — the hook turns flow into burns
+              Buy the token — the hook turns flow into <span class="section-title-accent">burns</span>
             </h2>
 
             <p class="body-text mb-16 max-w-3xl md:text-base">
@@ -340,7 +340,7 @@
             <div class="panel-box mb-12">
               <p class="label-text mb-2">Total supply</p>
               <p class="font-terminal text-5xl text-fluor md:text-6xl" id="token-total-supply">TBA</p>
-              <p class="mt-2 font-mono text-sm text-fluor"><span id="token-symbol">$CHAIN</span> · decreases when burned</p>
+              <p class="mt-2 font-mono text-sm text-fluor"><span id="token-symbol">$CHAIN</span> · <span class="text-fluor-red">decreases when burned</span></p>
               <p class="body-text mt-6 max-w-2xl">
                 The planned UniChain token contract will expose the final supply parameters at deployment.
                 Current contract address and live supply are marked TBA until the real $CHAIN contract is deployed.
@@ -376,7 +376,7 @@
         </section>
 
         <!-- ═══ GALLERY ═══ -->
-        <section id="gallery" class="section-pad border-b border-ui" aria-labelledby="gallery-heading">
+        <section id="gallery" class="section-pad gallery-section border-b border-ui" aria-labelledby="gallery-heading">
           <div class="mx-auto max-w-6xl px-6 md:px-10">
             <p class="section-label">Molecule index</p>
             <h2 id="gallery-heading" class="section-title mb-6">10 structures × 10 color patterns</h2>
@@ -386,48 +386,18 @@
               3D molecule in the lab.
             </p>
 
-            <div id="landing-gallery-grid" class="molecule-index-grid">
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/ethanol.png" alt="Ethanol mother molecule" loading="lazy" />
-                <figcaption>Ethanol</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/aspirin.png" alt="Aspirin mother molecule" loading="lazy" />
-                <figcaption>Aspirin</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/caffeine.png" alt="Caffeine mother molecule" loading="lazy" />
-                <figcaption>Caffeine</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/nicotine.png" alt="Nicotine mother molecule" loading="lazy" />
-                <figcaption>Nicotine</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/lsd.png" alt="LSD mother molecule" loading="lazy" />
-                <figcaption>LSD</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/cocaine.png" alt="Cocaine mother molecule" loading="lazy" />
-                <figcaption>Cocaine</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/cholesterol.png" alt="Cholesterol mother molecule" loading="lazy" />
-                <figcaption>Cholesterol</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/glucose.png" alt="Glucose mother molecule" loading="lazy" />
-                <figcaption>Glucose</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/cubane.png" alt="Cubane mother molecule" loading="lazy" />
-                <figcaption>Cubane</figcaption>
-              </figure>
-              <figure class="molecule-index-cell">
-                <img src="/images/molecules/buckyball.png" alt="Buckyball mother molecule" loading="lazy" />
-                <figcaption>Buckyball</figcaption>
-              </figure>
-            </div>
+            <ol id="landing-gallery-grid" class="molecule-index-list">
+              <li>Ethanol</li>
+              <li>Aspirin</li>
+              <li>Caffeine</li>
+              <li>Nicotine</li>
+              <li>LSD</li>
+              <li>Cocaine</li>
+              <li>Cholesterol</li>
+              <li>Glucose</li>
+              <li>Cubane</li>
+              <li>Buckyball</li>
+            </ol>
 
             <a href="#hero" class="btn-secondary mt-10 inline-flex">Back to the molecular lab ↑</a>
           </div>
@@ -553,7 +523,7 @@
             <div>
               <a href="#" class="site-logo mb-3">
                 <img src="/logo.svg" alt="" width="32" height="32" class="site-logo-mark" aria-hidden="true" />
-                <span class="site-logo-text text-2xl">Uni<span class="text-fluor">Chain</span></span>
+                <span class="site-logo-text text-2xl"><span class="text-fluor-red">UNI</span><span class="text-fluor">CHAIN</span></span>
               </a>
               <p class="max-w-sm font-mono text-xs leading-relaxed text-white">
                 UniChain is an Ethereum ERC-20 with a Uniswap v4 burn hook. Molecular Chains remain
@@ -565,12 +535,12 @@
               <a href="whitepaper.html" class="link-muted">Whitepaper</a>
               <a href="#hero" class="link-muted">Lab</a>
               <a href="#" class="link-muted" target="_blank" rel="noopener noreferrer">OpenSea</a>
-              <a href="https://x.com/Unihash_" class="link-muted" target="_blank" rel="noopener noreferrer">X ↗</a>
+              <a href="https://x.com/UniChainV4" class="link-muted" target="_blank" rel="noopener noreferrer">X ↗</a>
             </nav>
           </div>
 
           <p class="border-t border-ui pt-6 text-center font-mono text-[10px] uppercase tracking-[0.3em] text-fluor">
-            © 2026 UniChain · on-chain &amp; verifiable · $CHAIN
+            © 2026 UniChain · on-chain &amp; verifiable · <span class="text-fluor-red">$CHAIN</span>
           </p>
         </div>
       </footer>

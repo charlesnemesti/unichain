@@ -57,6 +57,18 @@
   .border-fluor-red {
     border-color: var(--fluor-red) !important;
   }
+
+  .accent-blue {
+    color: var(--fluor-blue) !important;
+  }
+
+  .accent-red {
+    color: var(--fluor-red) !important;
+  }
+
+  .glow-red {
+    box-shadow: 0 0 18px color-mix(in srgb, var(--fluor-red) 35%, transparent);
+  }
 }
 
 @layer components {
@@ -68,6 +80,10 @@
   .section-label {
     @apply mb-3 font-mono text-xs uppercase tracking-[0.35em];
     color: var(--fluor);
+  }
+
+  .section-title-accent {
+    color: var(--fluor-red);
   }
 
   .section-title {
@@ -368,54 +384,57 @@
     @apply h-full w-full;
   }
 
-  .molecule-index-grid {
+  .gallery-section {
+    position: relative;
+    isolation: isolate;
+    scroll-margin-top: 5rem;
+    background: color-mix(in srgb, var(--void) 92%, transparent);
+  }
+
+  .molecule-index-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
+    gap: 0.35rem 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: mol-index;
   }
 
   @media (min-width: 640px) {
-    .molecule-index-grid {
+    .molecule-index-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.35rem 2rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .molecule-index-list {
       grid-template-columns: repeat(5, minmax(0, 1fr));
     }
   }
 
-  @media (min-width: 1024px) {
-    .molecule-index-grid {
-      grid-template-columns: repeat(10, minmax(0, 1fr));
-    }
-  }
-
-  .molecule-index-cell {
-    position: relative;
-    margin: 0;
-    min-height: 8.75rem;
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--fluor) 28%, transparent);
-    background: color-mix(in srgb, var(--void) 96%, transparent);
-  }
-
-  .molecule-index-cell img {
-    display: block;
-    width: 100%;
-    height: calc(100% - 1.75rem);
-    object-fit: cover;
-    object-position: center;
-    filter: saturate(1.08) contrast(1.04);
-  }
-
-  .molecule-index-cell figcaption {
+  .molecule-index-list li {
     display: flex;
     align-items: center;
-    height: 1.75rem;
-    padding: 0 0.55rem;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--fluor) 14%, transparent);
     font-family: 'Fira Code', monospace;
-    font-size: 0.58rem;
-    letter-spacing: 0.16em;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: color-mix(in srgb, var(--bond) 80%, transparent);
-    border-top: 1px solid color-mix(in srgb, var(--fluor) 18%, transparent);
-    background: color-mix(in srgb, var(--void) 92%, transparent);
+    color: var(--white);
+  }
+
+  .molecule-index-list li::before {
+    content: counter(mol-index, decimal-leading-zero);
+    counter-increment: mol-index;
+    flex-shrink: 0;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    color: var(--fluor-blue);
   }
 
   .wallet-panel {
@@ -597,6 +616,10 @@
 
   .hero-stat-num {
     color: var(--fluor);
+  }
+
+  .hero-stat-num--red {
+    color: var(--fluor-red);
   }
 
   .site-bg-canvas {
@@ -1390,6 +1413,10 @@
 
   .lab-menu-stats .hero-stat-num {
     color: var(--fluor-blue);
+  }
+
+  .lab-menu-stats .hero-stat-num--red {
+    color: var(--fluor-red);
   }
 
   .lab-menu-buy {

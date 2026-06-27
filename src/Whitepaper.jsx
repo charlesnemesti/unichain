@@ -159,7 +159,7 @@ export default function Whitepaper() {
           </a>
           <div className="flex shrink-0 items-center gap-3">
             <a
-              href="https://x.com/Unihash_"
+              href="https://x.com/UniChainV4"
               className="btn-twitter"
               target="_blank"
               rel="noopener noreferrer"
