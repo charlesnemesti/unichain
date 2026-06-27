@@ -398,7 +398,7 @@ async function initHeroStats() {
     if (!stats) return;
 
     animateStat('stat-hashes', stats.hashesAlive);
-    animateStat('stat-holders', stats.holders);
+    setStatLabel('stat-holders', stats.hookLabel);
     animateStat('stat-spawned', stats.blocksSpawned);
   } catch (error) {
     console.error(`[${BRAND_NAME}] Could not load protocol stats:`, error);
@@ -407,6 +407,11 @@ async function initHeroStats() {
       if (el) el.textContent = '—';
     });
   }
+}
+
+function setStatLabel(id, value) {
+  const el = $(id);
+  if (el) el.textContent = value || '—';
 }
 
 function animateStat(id, target) {
@@ -440,14 +445,14 @@ function initBuyLinks() {
 }
 
 async function initTokenomics() {
-  if (!liveDataEnabled) return;
-
   const supplyEl = $('token-total-supply');
+  const initialEl = $('token-initial-supply');
   const symbolEl = $('token-symbol');
   if (!supplyEl) return;
 
-  if (!contractsConfigured()) {
-    supplyEl.textContent = '—';
+  if (!liveDataEnabled || !contractsConfigured()) {
+    if (supplyEl) supplyEl.textContent = '137,000';
+    if (initialEl) initialEl.textContent = '137,000';
     return;
   }
 
@@ -456,10 +461,12 @@ async function initTokenomics() {
     if (!meta) return;
 
     supplyEl.textContent = formatNumber(meta.totalSupply);
+    if (initialEl) initialEl.textContent = formatNumber(meta.initialSupply);
     if (symbolEl) symbolEl.textContent = `$${meta.symbol}`;
   } catch (error) {
     console.error(`[${BRAND_NAME}] Could not load token metadata:`, error);
     supplyEl.textContent = '—';
+    if (initialEl) initialEl.textContent = '—';
   }
 }
 

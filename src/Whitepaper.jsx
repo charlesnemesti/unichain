@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Logo } from './Logo.jsx';
-import { ETHERSCAN_HOOK_URL, ETHERSCAN_TOKEN_URL, UNICHAIN_HOOK_CA, UNIHASH_CA, UNISWAP_BUY_URL } from './config/deployed.js';
+import { ETHERSCAN_HOOK_URL, ETHERSCAN_TOKEN_URL, TOKEN_DECIMALS, TOKEN_INITIAL_SUPPLY, UNICHAIN_HOOK_CA, UNIHASH_CA, UNISWAP_BUY_URL, UNISWAP_V4_POOL_MANAGER, shortenCa } from './config/deployed.js';
 import { initCaStrip } from './ca-strip.js';
 
 const NAV_ITEMS = [
@@ -202,7 +202,7 @@ export default function Whitepaper() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              TBA
+              Etherscan
             </a>
             <button type="button" className="ca-copy-btn" id="ca-copy-btn">
               Copy CA
@@ -265,16 +265,15 @@ export default function Whitepaper() {
             title="Abstract"
           >
             <p className="text-sm leading-relaxed text-zinc-400">
-              UniChain documents the intended <Accent>$CHAIN</Accent> deployment. The core contract address
-              is marked <Accent>TBA</Accent> until the real UniChain contract is deployed. Its role is focused:
-              balances, allowances, transfers, public burns and a one-time hook assignment. The molecular
+              UniChain is deployed on Ethereum mainnet at <Accent>{UNIHASH_CA}</Accent>. The core contract
+              exposes balances, allowances, transfers, public burns and a one-time hook assignment. The molecular
               Chain NFTs remain part of the project, but as a separate external contract layer rather than
               native logic inside this ERC-20.
             </p>
             <SpecGrid
               specs={[
                 { label: 'Network', value: 'Ethereum L1' },
-                { label: 'Initial supply', value: 'TBA' },
+                { label: 'Initial supply', value: `${TOKEN_INITIAL_SUPPLY.toLocaleString('en-US')} $CHAIN` },
                 { label: 'Model', value: 'ERC-20 + v4 burn hook' },
               ]}
             />
@@ -290,8 +289,8 @@ export default function Whitepaper() {
             <ItemGrid
               items={[
                 'contract name: UniChain',
-                'symbol: $CHAIN · decimals: TBA',
-                'initial supply: TBA',
+                `symbol: $CHAIN · decimals: ${TOKEN_DECIMALS}`,
+                `initial supply: ${TOKEN_INITIAL_SUPPLY.toLocaleString('en-US')}`,
                 'public burn function reduces circulating supply',
               ]}
             />
@@ -315,13 +314,14 @@ export default function Whitepaper() {
 
           <DocCard id="signal-003" badge="// 03 · supply" title="Supply mechanics">
             <p className="text-sm leading-relaxed text-zinc-400">
-              The deployed contract parameters are <Accent>TBA</Accent>. Once the real $CHAIN contract is
-              deployed, live reads will show current supply below initial supply whenever burns have occurred.
-              Hook stats will split burn activity across buy and sell flow.
+              The live deployment uses an initial supply of{' '}
+              <Accent>{TOKEN_INITIAL_SUPPLY.toLocaleString('en-US')} $CHAIN</Accent>. Current supply is read from{' '}
+              <Accent>totalSupply()</Accent> and falls below initial supply whenever burns have occurred.
+              Hook stats split burn activity across buy and sell flow.
             </p>
             <ItemGrid
               items={[
-                'initial supply: TBA',
+                `initial supply: ${TOKEN_INITIAL_SUPPLY.toLocaleString('en-US')}`,
                 'current supply is dynamic and read from totalSupply()',
                 'burns are permanent ERC-20 supply reductions',
                 'no native dividends, staking or reward-claim function in the token',
@@ -337,8 +337,8 @@ export default function Whitepaper() {
             </p>
             <ItemGrid
               items={[
-                'pool manager: TBA',
-                'hook contract: UniChainHook',
+                `pool manager: ${UNISWAP_V4_POOL_MANAGER}`,
+                `hook contract: ${UNICHAIN_HOOK_CA}`,
                 'exact-output swaps are marked unsupported by the hook ABI',
                 'the hook is protocol logic; the token remains simple ERC-20 state',
               ]}
@@ -396,10 +396,10 @@ export default function Whitepaper() {
             />
             <div className="mt-6 flex flex-wrap gap-4">
               <a href={ETHERSCAN_TOKEN_URL} className="border border-zinc-700 px-5 py-3 text-xs uppercase tracking-widest text-zinc-300 transition-colors hover:border-fluor hover:text-fluor" target="_blank" rel="noopener noreferrer">
-                Token TBA
+                Token · {shortenCa(UNIHASH_CA)}
               </a>
               <a href={ETHERSCAN_HOOK_URL} className="border border-zinc-700 px-5 py-3 text-xs uppercase tracking-widest text-zinc-300 transition-colors hover:border-fluor hover:text-fluor" target="_blank" rel="noopener noreferrer">
-                Hook TBA
+                Hook · {shortenCa(UNICHAIN_HOOK_CA)}
               </a>
             </div>
           </DocCard>
@@ -407,7 +407,7 @@ export default function Whitepaper() {
           <DocCard id="signal-008" badge="// 08 · parameters" title="Parameters">
             <SpecGrid
               specs={[
-                { label: 'Initial supply', value: 'TBA' },
+                { label: 'Initial supply', value: TOKEN_INITIAL_SUPPLY.toLocaleString('en-US') },
                 { label: 'Buy / sell fee', value: '1% / 5%' },
                 { label: 'NFT contract', value: 'External add-on' },
               ]}
@@ -430,7 +430,7 @@ Hook explorer         ${ETHERSCAN_HOOK_URL}`}</CodeBlock>
               Chains as the NFT expansion that can be connected by a separate contract.
             </p>
             <p className="mt-6 border-t border-zinc-800 pt-6 text-xs leading-relaxed text-zinc-500">
-              Docs prepared for the real UniChain deployment. Technical specification only — not financial or
+              Live UniChain deployment on Ethereum mainnet. Technical specification only — not financial or
               legal advice.
             </p>
             <div className="mt-6 flex flex-wrap gap-4">

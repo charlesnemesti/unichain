@@ -50,7 +50,7 @@ export function initCaStrip() {
   if (strip.dataset.initialized === 'true') return;
   strip.dataset.initialized = 'true';
 
-  const SHOW_TBA = true;
+  const SHOW_TBA = false;
 
   if (SHOW_TBA) {
     display.textContent = 'TBA';

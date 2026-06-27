@@ -65,7 +65,7 @@ export function sampleTokenIds(mintedNum, sampleSize) {
 /**
  * @typedef {Object} ProtocolStats
  * @property {number} hashesAlive
- * @property {number} holders
+ * @property {string} hookLabel
  * @property {number} blocksSpawned
  */
 
@@ -77,13 +77,6 @@ export function sampleTokenIds(mintedNum, sampleSize) {
  * @property {string} ownerShort
  * @property {string} svg
  * @property {number} claimableEth
- */
-
-/**
- * @typedef {Object} TokenMetadata
- * @property {string} symbol
- * @property {number} totalSupply
- * @property {number} minted
  */
 
 /**
@@ -104,6 +97,13 @@ export async function readMintedCount() {
 }
 
 /**
+ * @typedef {Object} TokenMetadata
+ * @property {string} symbol
+ * @property {number} totalSupply
+ * @property {number} initialSupply
+ */
+
+/**
  * @returns {Promise<TokenMetadata | null>}
  */
 export async function readTokenMetadata() {
@@ -111,19 +111,21 @@ export async function readTokenMetadata() {
   if (!address) return null;
 
   const client = getPublicClient();
-  const [symbol, totalSupply, decimals, minted] = await Promise.all([
+  const [symbol, totalSupply, initialSupply, decimals] = await Promise.all([
     client.readContract({ address, abi: unihashAbi, functionName: 'symbol' }),
-    client.readContract({ address, abi: unihashAbi, functionName: 'TOTAL_SUPPLY' }).catch(() =>
+    client.readContract({ address, abi: unihashAbi, functionName: 'totalSupply' }),
+    client.readContract({ address, abi: unihashAbi, functionName: 'INITIAL_SUPPLY' }).catch(() =>
       client.readContract({ address, abi: unihashAbi, functionName: 'totalSupply' }),
     ),
     client.readContract({ address, abi: unihashAbi, functionName: 'decimals' }),
-    client.readContract({ address, abi: unihashAbi, functionName: 'minted' }).catch(() => 0n),
   ]);
+
+  const unit = Number(decimals);
 
   return {
     symbol,
-    totalSupply: Number.parseFloat(formatUnits(totalSupply, Number(decimals))),
-    minted: Number(minted),
+    totalSupply: Number.parseFloat(formatUnits(totalSupply, unit)),
+    initialSupply: Number.parseFloat(formatUnits(initialSupply, unit)),
   };
 }
 
@@ -165,19 +167,24 @@ export async function readProtocolStats() {
   if (!address) return null;
 
   const client = getPublicClient();
-  const [totalSupply, decimals, burnedTotal] = await Promise.all([
+  const [totalSupply, decimals, hookAddress] = await Promise.all([
     client.readContract({ address, abi: unihashAbi, functionName: 'totalSupply' }).catch(() => 0n),
     client.readContract({ address, abi: unihashAbi, functionName: 'decimals' }).catch(() => 18),
-    client.readContract({
-      address: UNICHAIN_HOOK_CA,
-      abi: unichainHookAbi,
-      functionName: 'cumulativeBurnedTotal',
-    }).catch(() => 0n),
+    client.readContract({ address, abi: unihashAbi, functionName: 'hook' }).catch(() => zeroAddress),
   ]);
+
+  const hookCa = isDeployed(hookAddress) ? hookAddress : UNICHAIN_HOOK_CA;
+  const burnedTotal = isDeployed(hookCa)
+    ? await client.readContract({
+        address: hookCa,
+        abi: unichainHookAbi,
+        functionName: 'cumulativeBurnedTotal',
+      }).catch(() => 0n)
+    : 0n;
 
   return {
     hashesAlive: Math.round(Number.parseFloat(formatUnits(totalSupply, Number(decimals)))),
-    holders: isDeployed(UNICHAIN_HOOK_CA) ? 1 : 0,
+    hookLabel: isDeployed(hookAddress) ? 'Live' : 'Pending',
     blocksSpawned: Math.round(Number.parseFloat(formatUnits(burnedTotal, Number(decimals)))),
   };
 }

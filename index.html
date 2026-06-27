@@ -338,19 +338,19 @@
             <p class="section-label">Tokenomics</p>
 
             <div class="panel-box mb-12">
-              <p class="label-text mb-2">Total supply</p>
-              <p class="font-terminal text-5xl text-fluor md:text-6xl" id="token-total-supply">TBA</p>
+              <p class="label-text mb-2">Current supply</p>
+              <p class="font-terminal text-5xl text-fluor md:text-6xl" id="token-total-supply">137,000</p>
               <p class="mt-2 font-mono text-sm text-fluor"><span id="token-symbol">$CHAIN</span> · <span class="text-fluor-red">decreases when burned</span></p>
               <p class="body-text mt-6 max-w-2xl">
-                The planned UniChain token contract will expose the final supply parameters at deployment.
-                Current contract address and live supply are marked TBA until the real $CHAIN contract is deployed.
+                UniChain is live on Ethereum mainnet. The ERC-20 exposes standard balances and transfers,
+                a public burn function, and a one-time hook assignment to UniChainHook for Uniswap v4 flow burns.
               </p>
             </div>
 
             <div class="grid gap-4 md:grid-cols-2">
               <div class="stat-cell">
                 <p class="stat-cell-label">Initial supply</p>
-                <p class="stat-cell-value">TBA</p>
+                <p class="stat-cell-value" id="token-initial-supply">137,000</p>
               </div>
               <div class="stat-cell">
                 <p class="stat-cell-label">Buy hook fee</p>
@@ -362,7 +362,7 @@
               </div>
               <div class="stat-cell">
                 <p class="stat-cell-label">Hook contract</p>
-                <p class="stat-cell-value">Set once</p>
+                <p class="stat-cell-value">Live</p>
               </div>
             </div>
 
@@ -424,7 +424,7 @@
                 </li>
                 <li class="flex items-start gap-3">
                   <span class="bullet-square" aria-hidden="true"></span>
-                  <span>Supply and contract address are TBA until the real UniChain deployment</span>
+                  <span>Live $CHAIN contract on Ethereum mainnet with hook set to UniChainHook</span>
                 </li>
                 <li class="flex items-start gap-3">
                   <span class="bullet-square" aria-hidden="true"></span>
@@ -447,7 +447,7 @@
             <p class="section-label">Your wallet</p>
             <h2 id="wallet-heading" class="section-title mb-6">Read your $CHAIN balance</h2>
             <p class="body-text mb-10 max-w-2xl">
-              Connect a wallet to read your live $CHAIN holdings once the contract is deployed. Chain NFTs and reward actions will appear
+              Connect a wallet to read your live $CHAIN balance on Ethereum mainnet. Chain NFTs and reward actions will appear
               here only after the external contracts are connected.
             </p>
 
@@ -560,7 +560,7 @@
               target="_blank"
               rel="noopener noreferrer"
             >
-              TBA
+              Etherscan
             </a>
             <button type="button" class="ca-copy-btn" id="ca-copy-btn">Copy CA</button>
           </div>
