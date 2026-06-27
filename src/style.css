@@ -1047,6 +1047,8 @@
 
   /* ── Hero · interactive molecular Chain NFT lab ── */
   .lab-hero {
+    --lab-side-left-w: clamp(14rem, 17vw, 21rem);
+    --lab-side-right-w: clamp(8.75rem, 10.5vw, 12.5rem);
     position: relative;
     display: flex;
     align-items: center;
@@ -1081,44 +1083,16 @@
 
   @media (min-width: 1024px) {
     .lab-hero-grid {
-      display: grid;
-      grid-template-columns: minmax(15rem, 20rem) minmax(10rem, 1fr) minmax(9.5rem, 12.5rem);
-      grid-template-rows: auto 1fr;
-      align-items: center;
-      gap: 1.25rem 2rem;
+      display: block;
       width: 100%;
-      max-width: min(100rem, 100%);
-      margin-inline: auto;
+      max-width: 100%;
+      margin: 0;
       padding:
         clamp(7.25rem, 11vh, 9.25rem)
-        clamp(1rem, 2vw, 2rem)
+        0
         clamp(4.5rem, 8vh, 5.5rem);
       min-height: 100dvh;
       pointer-events: none;
-    }
-  }
-
-  @media (min-width: 1024px) and (max-width: 1279px) {
-    .lab-hero-grid {
-      grid-template-columns: minmax(14rem, 17.5rem) minmax(6rem, 1fr) minmax(8.5rem, 10.5rem);
-      gap: 1rem 1.25rem;
-      padding-inline: 1rem;
-    }
-  }
-
-  @media (min-width: 1280px) and (max-width: 1599px) {
-    .lab-hero-grid {
-      grid-template-columns: minmax(16rem, 21rem) minmax(12rem, 1fr) minmax(9rem, 12rem);
-      max-width: 96rem;
-    }
-  }
-
-  @media (min-width: 1600px) {
-    .lab-hero-grid {
-      grid-template-columns: minmax(17rem, 22rem) minmax(14rem, 1fr) minmax(10rem, 13rem);
-      gap: 1.5rem 2.5rem;
-      max-width: 100rem;
-      padding-inline: 2.5rem;
     }
   }
 
@@ -1129,17 +1103,18 @@
 
   @media (min-width: 1024px) {
     .lab-hero-left {
-      grid-column: 1;
-      grid-row: 2;
-      position: static;
-      transform: none;
-      width: 100%;
+      position: fixed;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: var(--lab-side-left-w);
       max-width: none;
-      align-self: center;
       max-height: calc(100dvh - clamp(11rem, 18vh, 14rem));
+      padding-inline: clamp(0.75rem, 1.1vw, 1.25rem) 0.5rem;
       overflow-y: auto;
       overscroll-behavior: contain;
       pointer-events: auto;
+      z-index: 4;
       scrollbar-width: thin;
     }
   }
@@ -1157,14 +1132,13 @@
 
   @media (min-width: 1024px) {
     .lab-hero-title {
-      grid-column: 1 / -1;
-      grid-row: 1;
-      position: static;
-      transform: none;
+      position: relative;
       width: 100%;
       max-width: 100%;
       margin: 0 0 0.25rem;
-      padding-inline: clamp(0.5rem, 2vw, 2rem);
+      padding-inline:
+        calc(var(--lab-side-left-w) + 0.5rem)
+        calc(var(--lab-side-right-w) + 0.5rem);
       font-size: clamp(1rem, 1.75vw, 2rem);
       line-height: 1.1;
       white-space: normal;
@@ -1335,19 +1309,19 @@
 
   @media (min-width: 1024px) {
     .lab-hero-menu {
-      grid-column: 3;
-      grid-row: 2;
-      position: static;
-      transform: none;
-      width: 100%;
+      position: fixed;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      width: var(--lab-side-right-w);
       max-width: none;
-      align-self: center;
       max-height: calc(100dvh - clamp(11rem, 18vh, 14rem));
+      padding-inline: 0.5rem clamp(0.75rem, 1.1vw, 1.25rem);
+      border-left: 1px solid color-mix(in srgb, var(--fluor-blue) 18%, transparent);
       overflow-y: auto;
       overscroll-behavior: contain;
-      padding-left: 1rem;
-      border-left: 1px solid color-mix(in srgb, var(--fluor-blue) 18%, transparent);
       pointer-events: auto;
+      z-index: 4;
       scrollbar-width: thin;
     }
   }
