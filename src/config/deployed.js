@@ -1,7 +1,9 @@
-/** Live mainnet deployment — used when VITE_UNIHASH is unset (e.g. Vercel). */
-export const UNIHASH_CA = '0x82da588a1DcD34aaF726E8833364b21d37C2f70C';
+/** Real UniChain deployment placeholders. Replace after the production contracts are deployed. */
+export const UNIHASH_CA = 'TBA';
 
-export const UNISWAP_BUY_URL =
-  `https://app.uniswap.org/swap?chain=mainnet&inputCurrency=ETH&outputCurrency=${UNIHASH_CA}`;
+export const UNICHAIN_HOOK_CA = 'TBA';
 
-export const ETHERSCAN_TOKEN_URL = `https://etherscan.io/address/${UNIHASH_CA}`;
+export const UNISWAP_BUY_URL = '#';
+
+export const ETHERSCAN_TOKEN_URL = '#';
+export const ETHERSCAN_HOOK_URL = '#';

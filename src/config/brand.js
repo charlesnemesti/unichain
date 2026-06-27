@@ -1,4 +1,4 @@
-/** UniChain — blockchain × molecular chains (rebrand layer over existing $CHAIN contract). */
+/** UniChain — burn-driven $CHAIN token with molecular Chain NFTs as an external add-on. */
 
 export const BRAND_NAME = 'UniChain';
 export const BRAND_NAME_HTML = 'Uni<span class="text-fluor">Chain</span>';
@@ -6,14 +6,14 @@ export const TOKEN_SYMBOL = '$CHAIN';
 export const NFT_NAME = 'Chain';
 export const NFT_NAME_PLURAL = 'Chains';
 
-export const HERO_EYEBROW = 'Molecular registry on Ethereum EVM';
+export const HERO_EYEBROW = 'Ethereum ERC-20 with Uniswap v4 burn hook';
 export const HERO_TYPEWRITER_TEXT =
-  'Hold 200 $CHAIN — forge a living Chain on-chain, atom by atom';
+  '$CHAIN burns through its Uniswap v4 hook — NFTs expand the lab next';
 export const HERO_ARIA_LABEL =
-  'Hold 200 HASH tokens to forge living on-chain molecular Chain NFTs';
+  'UniChain ERC20 token with burn hook and future molecular Chain NFT expansion';
 
 export const TAGLINE =
-  'A token you hold to stabilize molecular Chains — 200 whole $CHAIN forges one living NFT. Drop below 200 and it burns.';
+  'An Ethereum ERC-20 with buy/sell burn mechanics, structured for a future external molecular Chain NFT layer.';
 
 export const TWITTER_URL = 'https://x.com/Unihash_';
 export const GALLERY_CTA = 'Enter the molecular lab ↗';

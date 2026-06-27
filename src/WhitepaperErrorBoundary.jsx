@@ -11,14 +11,14 @@ export class WhitepaperErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, info) {
-    console.error('[UniHash] Whitepaper render failed:', error, info);
+    console.error('[UniChain] Whitepaper render failed:', error, info);
   }
 
   render() {
     if (this.state.error) {
       return (
         <div className="mx-auto max-w-2xl p-8 font-mono text-sm text-red-400">
-          <p className="mb-4 text-fluor">Failed to load UniHash docs.</p>
+          <p className="mb-4 text-fluor">Failed to load UniChain docs.</p>
           <pre className="overflow-x-auto whitespace-pre-wrap border border-zinc-800 bg-black p-4 text-xs text-zinc-300">
             {this.state.error.message}
           </pre>

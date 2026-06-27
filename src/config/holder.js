@@ -3,15 +3,16 @@ import { unihashAbi } from '../abis/unihash.js';
 import { CONTRACTS, isDeployed } from './contracts.js';
 import { getPublicClient } from '../web3/provider.js';
 
-/** Fallback when UNIT() cannot be read (200 whole tokens = 1 NFT). */
-export const HOLDER_THRESHOLD_FALLBACK = 200;
-export const HOLDER_THRESHOLD_LABEL = '200';
+/** Fallback display threshold for wallet balance progress on the ERC-20 token. */
+export const HOLDER_THRESHOLD_FALLBACK = 1;
+export const HOLDER_THRESHOLD_LABEL = '1';
 
 /** @type {number | null} */
 let cachedUnitTokens = null;
 
 /**
- * Read UNIT from chain and convert to whole-token threshold.
+ * Read UNIT from older hybrid deployments and convert to whole-token threshold.
+ * UniChain itself is a plain ERC-20, so this falls back to the display threshold.
  * @returns {Promise<number>}
  */
 export async function readUnitFromChain() {

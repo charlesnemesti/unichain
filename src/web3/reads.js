@@ -99,7 +99,7 @@ export async function readWalletBalances(address) {
     });
     hashesOwned = ownedIds.length;
   } else {
-    hashesOwned = Math.floor(hashBalance / unitThreshold);
+    hashesOwned = 0;
   }
 
   if (isDeployed(CONTRACTS.rewardDistributor)) {

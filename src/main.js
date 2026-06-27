@@ -124,13 +124,13 @@ function updateHoldVisuals(balance) {
   if (note) {
     note.classList.remove('is-stable', 'is-burning');
     if (eligible) {
-      note.textContent = `Chain stable — ${NFT_NAME_PLURAL} forging on-chain`;
+      note.textContent = `${TOKEN_SYMBOL} detected — external ${NFT_NAME_PLURAL} module pending`;
       note.classList.add('is-stable');
     } else if (balance > 0 && balance < holdThreshold) {
-      note.textContent = `Unstable — drop below ${HOLDER_THRESHOLD_LABEL} burns your Chain`;
+      note.textContent = `${TOKEN_SYMBOL} balance detected — building toward external module access`;
       note.classList.add('is-burning');
     } else {
-      note.textContent = `Hold ${HOLDER_THRESHOLD_LABEL} ${TOKEN_SYMBOL} to forge a molecular Chain`;
+      note.textContent = `Connect wallet to read live ${TOKEN_SYMBOL} balance`;
     }
   }
 }
@@ -312,7 +312,7 @@ async function connectWithProvider(provider, rdns) {
     } else if (!liveDataEnabled) {
       setStatus(`Connected. ${LAUNCH_TERMINAL_MESSAGE}.`, 'warn');
     } else if (balances.claimableEth > 0) {
-      setStatus('Connected. Rewards ready to claim.', 'success');
+      setStatus('Connected. External rewards ready to claim.', 'success');
     } else {
       setStatus('Connected. Wallet synced on-chain.', 'success');
     }

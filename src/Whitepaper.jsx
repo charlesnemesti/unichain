@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Logo } from './Logo.jsx';
-import { UNIHASH_CA, ETHERSCAN_TOKEN_URL, UNISWAP_BUY_URL } from './config/deployed.js';
+import { ETHERSCAN_HOOK_URL, ETHERSCAN_TOKEN_URL, UNICHAIN_HOOK_CA, UNIHASH_CA, UNISWAP_BUY_URL } from './config/deployed.js';
 import { initCaStrip } from './ca-strip.js';
 
 const NAV_ITEMS = [
   { id: 'overview', label: 'ABSTRACT' },
-  { id: 'signal-001', label: 'THE HYBRID' },
-  { id: 'signal-002', label: 'PROTOCOL YIELD' },
-  { id: 'signal-003', label: 'SEAL & BOND' },
-  { id: 'signal-004', label: 'FEE & POOL' },
-  { id: 'signal-005', label: 'LIMITS & LAUNCH' },
-  { id: 'signal-006', label: 'ONCHAIN ART' },
+  { id: 'signal-001', label: 'ERC20 CORE' },
+  { id: 'signal-002', label: 'BURN HOOK' },
+  { id: 'signal-003', label: 'SUPPLY' },
+  { id: 'signal-004', label: 'POOL FLOW' },
+  { id: 'signal-005', label: 'NFT ADD-ON' },
+  { id: 'signal-006', label: 'MOLECULAR ART' },
   { id: 'signal-007', label: 'CONTRACTS' },
   { id: 'signal-008', label: 'PARAMETERS' },
 ];
@@ -163,7 +163,7 @@ export default function Whitepaper() {
               className="btn-twitter"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Follow UniHash on X"
+              aria-label="Follow UniChain on X"
             >
               <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -192,7 +192,7 @@ export default function Whitepaper() {
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-2.5">
           <div className="ca-strip-meta min-w-0 flex-1">
             <p className="ca-strip-label">&gt; contract_address · $CHAIN</p>
-            <code className="ca-strip-address" id="ca-address-display" title="UniHash token contract" />
+            <code className="ca-strip-address" id="ca-address-display" title="UniChain token contract" />
           </div>
           <div className="ca-strip-actions flex shrink-0 items-center gap-2">
             <a
@@ -202,7 +202,7 @@ export default function Whitepaper() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Etherscan ↗
+              TBA
             </a>
             <button type="button" className="ca-copy-btn" id="ca-copy-btn">
               Copy CA
@@ -265,167 +265,172 @@ export default function Whitepaper() {
             title="Abstract"
           >
             <p className="text-sm leading-relaxed text-zinc-400">
-              Most tokens are inert and most NFTs sit idle. UniHash folds the two together.{' '}
-              <Accent>$CHAIN</Accent> is a normal ERC-20 you buy on Uniswap, but it is also the fuel for a
-              living NFT: hold <Accent>1 whole $CHAIN</Accent> and a <Accent>Hash</Accent> mints itself to
-              your wallet. Each Hash earns protocol rewards from swap fees for as long as you hold. Nothing
-              is staked, there is no mint page, and the art is drawn entirely on-chain.
+              UniChain documents the intended <Accent>$CHAIN</Accent> deployment. The core contract address
+              is marked <Accent>TBA</Accent> until the real UniChain contract is deployed. Its role is focused:
+              balances, allowances, transfers, public burns and a one-time hook assignment. The molecular
+              Chain NFTs remain part of the project, but as a separate external contract layer rather than
+              native logic inside this ERC-20.
             </p>
             <SpecGrid
               specs={[
                 { label: 'Network', value: 'Ethereum L1' },
-                { label: 'Supply', value: '5,000 $CHAIN' },
-                { label: 'Model', value: 'DN404 hybrid' },
+                { label: 'Initial supply', value: 'TBA' },
+                { label: 'Model', value: 'ERC-20 + v4 burn hook' },
               ]}
             />
           </DocCard>
 
-          <DocCard id="signal-001" badge="// 01 · the hybrid" title="The hybrid">
+          <DocCard id="signal-001" badge="// 01 · erc20 core" title="ERC20 core">
             <p className="text-sm leading-relaxed text-zinc-400">
-              $CHAIN is a <Accent>DN404-style hybrid</Accent>. The ERC-20 and the Hash ERC-721 are linked:
-              your Hash count always equals your balance divided by 1 (whole tokens only). Cross 1 and a
-              Hash appears; cross 2 and a second appears; sell below 1 and the NFT burns. No separate mint
-              transaction — it happens inside the transfer.
+              The token is not DN404 and does not expose ERC-721 mint, ownerOf or tokenURI functions. It is
+              a compact ERC-20 implementation with <Accent>name</Accent>, <Accent>symbol</Accent>,{' '}
+              <Accent>decimals</Accent>, <Accent>totalSupply</Accent>, <Accent>balanceOf</Accent>, approvals
+              and transfers. It also exposes <Accent>burn(amount)</Accent> for direct supply reduction.
             </p>
             <ItemGrid
               items={[
-                'pool, hook and contracts are flagged skipNFT — liquidity never mints Hashes',
-                'only real holders spawn living 24×24 SVG artifacts',
-                'fractional balances below 1 do not mint; drop below 1 and the NFT burns',
-                'transferring a Hash on a marketplace moves its 1 $CHAIN backing with it',
+                'contract name: UniChain',
+                'symbol: $CHAIN · decimals: TBA',
+                'initial supply: TBA',
+                'public burn function reduces circulating supply',
               ]}
             />
           </DocCard>
 
-          <DocCard id="signal-002" badge="// 02 · protocol yield" title="Protocol yield">
+          <DocCard id="signal-002" badge="// 02 · burn hook" title="Burn hook">
             <p className="text-sm leading-relaxed text-zinc-400">
-              Rewards are real and on-chain. The <Accent>4% swap fee</Accent> routes to a protocol treasury;
-              a distributor streams ETH back to Hash holders proportional to reward weight. Accrual is
-              automatic — you <Accent>claim whenever you want</Accent>.
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-400">
-              Treat yield as variable, not a fixed APY. The Ethereum contracts handle the token, the Hashes,
-              and the payout trustlessly. Anyone can verify the distributor on Etherscan.
+              UniChain points to <Accent>UniChainHook</Accent> at <Accent>{UNICHAIN_HOOK_CA}</Accent>. The
+              token can set this hook once; after it is set, attempts to set another hook revert. The hook is
+              the active protocol logic around trading flow.
             </p>
             <ItemGrid
               items={[
-                'rewards accrue by magnified-dividend accounting — exact to the wei',
-                'live Hash weight: 100 · sealed bond max: 250 (2.5×)',
-                'claim() pulls accrued ETH from the treasury distributor',
+                'buy fee: 1% (100 / 10,000 bps)',
+                'sell fee: 5% (500 / 10,000 bps)',
+                'tracks burned-from-buys and burned-from-sells separately',
+                'records total burned, last burn amount, timestamp and direction',
               ]}
             />
           </DocCard>
 
-          <DocCard id="signal-003" badge="// 03 · seal & bond" title="Seal & bond">
+          <DocCard id="signal-003" badge="// 03 · supply" title="Supply mechanics">
             <p className="text-sm leading-relaxed text-zinc-400">
-              A live Hash mirrors your balance — selling can burn it. <Accent>Sealing</Accent> locks 1 $CHAIN
-              into the contract and makes the Hash permanent, detached from your tradeable balance. In return
-              it starts a <Accent>bond</Accent> that grows the longer it stays sealed.
+              The deployed contract parameters are <Accent>TBA</Accent>. Once the real $CHAIN contract is
+              deployed, live reads will show current supply below initial supply whenever burns have occurred.
+              Hook stats will split burn activity across buy and sell flow.
             </p>
             <ItemGrid
               items={[
-                'live Hash reward weight: 100',
-                'sealed Hash weight climbs from 100 toward 250 over 90 days (2.5× max)',
-                'unsealing returns backing minus 8% burn and retires the Hash',
-                'sealed tokenURI is frozen permanently in contract storage',
+                'initial supply: TBA',
+                'current supply is dynamic and read from totalSupply()',
+                'burns are permanent ERC-20 supply reductions',
+                'no native dividends, staking or reward-claim function in the token',
               ]}
             />
           </DocCard>
 
-          <DocCard id="signal-004" badge="// 04 · fee & pool" title="Fee & the pool">
+          <DocCard id="signal-004" badge="// 04 · pool flow" title="Pool flow">
             <p className="text-sm leading-relaxed text-zinc-400">
-              $CHAIN trades against ETH in a Uniswap v4 pool. A v4 <Accent>hook</Accent> takes a{' '}
-              <Accent>4% fee</Accent> on the ETH side of each swap and sends it to the treasury — funding
-              holder rewards. The hook adds no extra swap logic beyond the fee. Pool fee is zero; the hook
-              is the only fee.
+              The hook is built for Uniswap v4. Its constructor links the Ethereum Uniswap v4 PoolManager and
+              the UniChain token. It validates canonical pool flow and emits <Accent>Burned</Accent> events
+              with direction, swapper, ETH spent, $CHAIN burned and the new total supply.
             </p>
             <ItemGrid
               items={[
-                'currency0: native ETH · currency1: $CHAIN',
-                'fee: 0 · hook: HashHook',
-                '4% ETH-side fee → treasury → distributor → holders',
+                'pool manager: TBA',
+                'hook contract: UniChainHook',
+                'exact-output swaps are marked unsupported by the hook ABI',
+                'the hook is protocol logic; the token remains simple ERC-20 state',
               ]}
             />
           </DocCard>
 
-          <DocCard id="signal-005" badge="// 05 · limits & launch" title="Limits & launch">
+          <DocCard id="signal-005" badge="// 05 · nft add-on" title="NFT add-on">
             <p className="text-sm leading-relaxed text-zinc-400">
-              UniHash is a <Accent>fair launch</Accent>: the entire 5,000 $CHAIN supply pairs into the pool
-              with 1 ETH — no team allocation, nothing held back. Two limits enforce on-chain at open:
+              The NFT plan should stay, but it should be described as a modular expansion. A future external
+              ERC-721 contract can read $CHAIN ownership, burn stats or other eligibility rules without
+              pretending that the current token mints NFTs by itself.
             </p>
             <ItemGrid
               items={[
-                'max 0.1% of supply per buy (5 $CHAIN)',
-                'max 2% of supply per wallet (100 $CHAIN)',
-                'limits liftable by owner after launch with a documented floor',
-                'ownership renounced before public trading',
+                'do not remove the molecular Chain NFT system',
+                'keep NFTs as a separate contract/module',
+                'avoid claiming auto-mint, auto-burn or native tokenURI from $CHAIN',
+                'future NFT contract can map 10 molecules × 10 color patterns',
               ]}
             />
           </DocCard>
 
-          <DocCard id="signal-006" badge="// 06 · onchain art" title="Onchain art">
+          <DocCard id="signal-006" badge="// 06 · molecular art" title="Molecular art">
             <p className="text-sm leading-relaxed text-zinc-400">
-              Every Hash is drawn on Ethereum, not hosted on a server. Renders are compact{' '}
-              <Accent>24×24 SVGs</Accent> generated from packed genome data. Live Hashes read current
-              balance state; sealed Hashes hold a frozen snapshot written at seal time.
+              The front-end art layer remains valuable: real PDB structures, interactive Three.js rendering
+              and a 100-unit visual catalog. This should be presented as the upcoming Chain collection rather
+              than as behavior already inside the $CHAIN contract.
             </p>
             <ItemGrid
               items={[
-                'palette: void black, fluor yellow, white',
-                'genome seed from owner + spawn block + tokenId',
-                'live objectURI mutates · sealed tokenURI frozen forever',
-                'image field: inline data:image/svg+xml;base64 — no IPFS',
+                '10 real PDB molecular structures',
+                '10 color-pattern identities',
+                '100 total Chain visual units',
+                'external contract will own the final mint/metadata rules',
               ]}
             />
             <CodeBlock>{`{
-  "name": "Hash #0042",
-  "description": "UniHash · 100% on-chain · spawn block 19842103",
-  "image": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PScwIDAgMjQgMjQnP..."
+  "name": "Chain #0042",
+  "description": "UniChain molecular NFT expansion for $CHAIN",
+  "image": "ipfs://... or data:... from the external NFT contract",
+  "attributes": ["molecule", "colorPattern", "burnEpoch"]
 }`}</CodeBlock>
           </DocCard>
 
           <DocCard id="signal-007" badge="// 07 · contracts" title="The contracts">
             <p className="text-sm leading-relaxed text-zinc-400">
-              The core is a small, readable set; the renderer is a pure library behind a single assembler.
-              All verifiable on Etherscan:
+              Planned contracts:
             </p>
             <ItemGrid
               items={[
-                'HashToken · $CHAIN + hybrid + dividend points + seal/bond',
-                'HashRegistry · ERC-721 face of your Hashes',
-                'HashHook · v4 hook and swap fee',
-                'RewardDistributor · treasury ETH streams to holders',
-                'SvgRenderer + MetadataAssembler · on-chain 24×24 art',
+                'UniChain · ERC-20 token, burn(), setHook(), hook()',
+                'UniChainHook · Uniswap v4 burn hook and burn-stat ledger',
+                'Molecular Chain NFT · planned external contract, not yet native to token',
               ]}
             />
+            <div className="mt-6 flex flex-wrap gap-4">
+              <a href={ETHERSCAN_TOKEN_URL} className="border border-zinc-700 px-5 py-3 text-xs uppercase tracking-widest text-zinc-300 transition-colors hover:border-fluor hover:text-fluor" target="_blank" rel="noopener noreferrer">
+                Token TBA
+              </a>
+              <a href={ETHERSCAN_HOOK_URL} className="border border-zinc-700 px-5 py-3 text-xs uppercase tracking-widest text-zinc-300 transition-colors hover:border-fluor hover:text-fluor" target="_blank" rel="noopener noreferrer">
+                Hook TBA
+              </a>
+            </div>
           </DocCard>
 
           <DocCard id="signal-008" badge="// 08 · parameters" title="Parameters">
             <SpecGrid
               specs={[
-                { label: 'Supply', value: '5,000 $CHAIN' },
-                { label: '$CHAIN per Hash', value: '1 whole token' },
-                { label: 'Max buy / wallet', value: '5 / 100' },
+                { label: 'Initial supply', value: 'TBA' },
+                { label: 'Buy / sell fee', value: '1% / 5%' },
+                { label: 'NFT contract', value: 'External add-on' },
               ]}
             />
             <ItemGrid
               items={[
-                'swap fee: 4% (hook → treasury → yield)',
-                'bond: 1.0× → 2.5× over 90 days sealed',
-                'unseal burn: 8% of backing',
-                'launch: fair, 100% into pool with 1 ETH',
-                'mint rule: ≥1 whole $CHAIN spawns · <1 burns',
+                'token: standard ERC-20 with direct burn',
+                'hook: records buy/sell burn stats',
+                'hook can only be assigned once on the token',
+                'no native reward distributor in current token ABI',
+                'no native ERC-721 functions in current token ABI',
               ]}
             />
-            <CodeBlock>{`UniHash (token + NFT + hook)  ${UNIHASH_CA}
-Etherscan                      ${ETHERSCAN_TOKEN_URL}
-Status                         ready after launch`}</CodeBlock>
+            <CodeBlock>{`UniChain token        ${UNIHASH_CA}
+UniChain hook         ${UNICHAIN_HOOK_CA}
+Token explorer        ${ETHERSCAN_TOKEN_URL}
+Hook explorer         ${ETHERSCAN_HOOK_URL}`}</CodeBlock>
             <p className="mt-6 text-sm leading-relaxed text-zinc-400">
-              Hold $CHAIN, grow a Hash, earn rewards. Everything above runs on-chain the moment you cross 1
-              whole token.
+              The site should lead with $CHAIN as the live burn-token primitive, then introduce molecular
+              Chains as the NFT expansion that can be connected by a separate contract.
             </p>
             <p className="mt-6 border-t border-zinc-800 pt-6 text-xs leading-relaxed text-zinc-500">
-              Docs updated from the source tree under review. Technical specification — not financial or
+              Docs prepared for the real UniChain deployment. Technical specification only — not financial or
               legal advice.
             </p>
             <div className="mt-6 flex flex-wrap gap-4">
@@ -446,7 +451,7 @@ Status                         ready after launch`}</CodeBlock>
         </div>
 
         <footer className="mx-auto mt-4 max-w-4xl border-t border-zinc-800 py-8 text-center text-[10px] uppercase tracking-[0.3em] text-fluor">
-          © 2026 UniHash · on-chain &amp; verifiable · $CHAIN
+          © 2026 UniChain · on-chain &amp; verifiable · $CHAIN
         </footer>
       </main>
       </div>

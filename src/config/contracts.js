@@ -10,17 +10,11 @@ function parseAddress(value, fallback = zero) {
 
 const unihash = parseAddress(import.meta.env.VITE_UNIHASH, UNIHASH_CA);
 
-function resolveContract(specific) {
-  const specificAddr = parseAddress(specific);
-  if (specificAddr !== zero) return specificAddr;
-  return unihash;
-}
-
 export const CONTRACTS = {
   unihash,
-  hashToken: resolveContract(import.meta.env.VITE_HASH_TOKEN),
-  hashRegistry: resolveContract(import.meta.env.VITE_HASH_REGISTRY),
-  rewardDistributor: resolveContract(import.meta.env.VITE_REWARD_DISTRIBUTOR),
+  hashToken: parseAddress(import.meta.env.VITE_HASH_TOKEN, unihash),
+  hashRegistry: parseAddress(import.meta.env.VITE_HASH_REGISTRY),
+  rewardDistributor: parseAddress(import.meta.env.VITE_REWARD_DISTRIBUTOR),
   uniswapPool: parseAddress(import.meta.env.VITE_UNISWAP_POOL),
 };
 

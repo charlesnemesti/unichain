@@ -1,7 +1,8 @@
 import { formatEther, formatUnits, zeroAddress } from 'viem';
-import { unihashAbi } from '../abis/unihash.js';
+import { unichainHookAbi, unihashAbi } from '../abis/unihash.js';
 import { BASE_HASH_SVGS, generateHashSvg } from '../hash-svgs.js';
 import { CONTRACTS, contractsConfigured, isDeployed } from '../config/contracts.js';
+import { UNICHAIN_HOOK_CA } from '../config/deployed.js';
 import { getPublicClient } from './provider.js';
 import { parseInnerSvgFromTokenUri } from './token-uri.js';
 
@@ -30,7 +31,7 @@ function resolveHashSvgMarkup(tokenId, tokenUri) {
     try {
       return parseInnerSvgFromTokenUri(tokenUri);
     } catch (error) {
-      console.warn(`[UniHash] tokenURI parse failed for #${tokenId}:`, error);
+      console.warn(`[UniChain] tokenURI parse failed for #${tokenId}:`, error);
     }
   }
 
@@ -97,7 +98,7 @@ export async function readMintedCount() {
     address,
     abi: unihashAbi,
     functionName: 'minted',
-  });
+  }).catch(() => 0n);
 
   return Number(minted);
 }
@@ -116,7 +117,7 @@ export async function readTokenMetadata() {
       client.readContract({ address, abi: unihashAbi, functionName: 'totalSupply' }),
     ),
     client.readContract({ address, abi: unihashAbi, functionName: 'decimals' }),
-    client.readContract({ address, abi: unihashAbi, functionName: 'minted' }),
+    client.readContract({ address, abi: unihashAbi, functionName: 'minted' }).catch(() => 0n),
   ]);
 
   return {
@@ -164,18 +165,20 @@ export async function readProtocolStats() {
   if (!address) return null;
 
   const client = getPublicClient();
-  const mintedNum = await readMintedCount();
-
-  if (mintedNum === 0) {
-    return { hashesAlive: 0, holders: 0, blocksSpawned: 0 };
-  }
-
-  const holders = await readUniqueHolders(client, address, mintedNum);
+  const [totalSupply, decimals, burnedTotal] = await Promise.all([
+    client.readContract({ address, abi: unihashAbi, functionName: 'totalSupply' }).catch(() => 0n),
+    client.readContract({ address, abi: unihashAbi, functionName: 'decimals' }).catch(() => 18),
+    client.readContract({
+      address: UNICHAIN_HOOK_CA,
+      abi: unichainHookAbi,
+      functionName: 'cumulativeBurnedTotal',
+    }).catch(() => 0n),
+  ]);
 
   return {
-    hashesAlive: mintedNum,
-    holders,
-    blocksSpawned: mintedNum,
+    hashesAlive: Math.round(Number.parseFloat(formatUnits(totalSupply, Number(decimals)))),
+    holders: isDeployed(UNICHAIN_HOOK_CA) ? 1 : 0,
+    blocksSpawned: Math.round(Number.parseFloat(formatUnits(burnedTotal, Number(decimals)))),
   };
 }
 
