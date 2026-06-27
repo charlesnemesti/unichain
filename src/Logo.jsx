@@ -11,7 +11,7 @@ export function Logo({ size = 36, showWordmark = true, className = '' }) {
       />
       {showWordmark ? (
         <span className="site-logo-text">
-          UniHash <span className="text-fluor">$HASH</span>
+          UniHash <span className="text-fluor">$CHAIN</span>
         </span>
       ) : null}
     </span>

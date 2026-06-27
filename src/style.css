@@ -75,7 +75,7 @@
   }
 
   .nav-link {
-    @apply font-mono text-xs uppercase tracking-widest transition-colors duration-200;
+    @apply font-mono text-lg uppercase tracking-widest transition-colors duration-200;
     color: var(--white);
   }
 
@@ -1124,21 +1124,21 @@
     .lab-hero-title {
       position: absolute;
       top: clamp(7.9rem, 12vh, 9.5rem);
-      left: clamp(18.75rem, 24.5vw, 28rem);
-      right: clamp(12.5rem, 16vw, 17rem);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(74vw, 58rem);
       z-index: 3;
       font-size: clamp(0.8rem, 1.6vw, 2rem);
       line-height: 1;
       white-space: nowrap;
       text-overflow: clip;
+      text-align: center;
       pointer-events: none;
     }
   }
 
   @media (min-width: 1500px) {
     .lab-hero-title {
-      left: clamp(21rem, 24vw, 31rem);
-      right: clamp(13.5rem, 15vw, 18rem);
       font-size: clamp(1rem, 1.45vw, 2.15rem);
     }
   }

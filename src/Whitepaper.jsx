@@ -175,7 +175,7 @@ export default function Whitepaper() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Buy $HASH ↗
+              Buy $CHAIN ↗
             </a>
             <a
               href="/"
@@ -191,7 +191,7 @@ export default function Whitepaper() {
         <div className="ca-strip-glow" aria-hidden="true" />
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-2.5">
           <div className="ca-strip-meta min-w-0 flex-1">
-            <p className="ca-strip-label">&gt; contract_address · $HASH</p>
+            <p className="ca-strip-label">&gt; contract_address · $CHAIN</p>
             <code className="ca-strip-address" id="ca-address-display" title="UniHash token contract" />
           </div>
           <div className="ca-strip-actions flex shrink-0 items-center gap-2">
@@ -266,15 +266,15 @@ export default function Whitepaper() {
           >
             <p className="text-sm leading-relaxed text-zinc-400">
               Most tokens are inert and most NFTs sit idle. UniHash folds the two together.{' '}
-              <Accent>$HASH</Accent> is a normal ERC-20 you buy on Uniswap, but it is also the fuel for a
-              living NFT: hold <Accent>1 whole $HASH</Accent> and a <Accent>Hash</Accent> mints itself to
+              <Accent>$CHAIN</Accent> is a normal ERC-20 you buy on Uniswap, but it is also the fuel for a
+              living NFT: hold <Accent>1 whole $CHAIN</Accent> and a <Accent>Hash</Accent> mints itself to
               your wallet. Each Hash earns protocol rewards from swap fees for as long as you hold. Nothing
               is staked, there is no mint page, and the art is drawn entirely on-chain.
             </p>
             <SpecGrid
               specs={[
                 { label: 'Network', value: 'Ethereum L1' },
-                { label: 'Supply', value: '5,000 $HASH' },
+                { label: 'Supply', value: '5,000 $CHAIN' },
                 { label: 'Model', value: 'DN404 hybrid' },
               ]}
             />
@@ -282,7 +282,7 @@ export default function Whitepaper() {
 
           <DocCard id="signal-001" badge="// 01 · the hybrid" title="The hybrid">
             <p className="text-sm leading-relaxed text-zinc-400">
-              $HASH is a <Accent>DN404-style hybrid</Accent>. The ERC-20 and the Hash ERC-721 are linked:
+              $CHAIN is a <Accent>DN404-style hybrid</Accent>. The ERC-20 and the Hash ERC-721 are linked:
               your Hash count always equals your balance divided by 1 (whole tokens only). Cross 1 and a
               Hash appears; cross 2 and a second appears; sell below 1 and the NFT burns. No separate mint
               transaction — it happens inside the transfer.
@@ -292,7 +292,7 @@ export default function Whitepaper() {
                 'pool, hook and contracts are flagged skipNFT — liquidity never mints Hashes',
                 'only real holders spawn living 24×24 SVG artifacts',
                 'fractional balances below 1 do not mint; drop below 1 and the NFT burns',
-                'transferring a Hash on a marketplace moves its 1 $HASH backing with it',
+                'transferring a Hash on a marketplace moves its 1 $CHAIN backing with it',
               ]}
             />
           </DocCard>
@@ -318,7 +318,7 @@ export default function Whitepaper() {
 
           <DocCard id="signal-003" badge="// 03 · seal & bond" title="Seal & bond">
             <p className="text-sm leading-relaxed text-zinc-400">
-              A live Hash mirrors your balance — selling can burn it. <Accent>Sealing</Accent> locks 1 $HASH
+              A live Hash mirrors your balance — selling can burn it. <Accent>Sealing</Accent> locks 1 $CHAIN
               into the contract and makes the Hash permanent, detached from your tradeable balance. In return
               it starts a <Accent>bond</Accent> that grows the longer it stays sealed.
             </p>
@@ -334,14 +334,14 @@ export default function Whitepaper() {
 
           <DocCard id="signal-004" badge="// 04 · fee & pool" title="Fee & the pool">
             <p className="text-sm leading-relaxed text-zinc-400">
-              $HASH trades against ETH in a Uniswap v4 pool. A v4 <Accent>hook</Accent> takes a{' '}
+              $CHAIN trades against ETH in a Uniswap v4 pool. A v4 <Accent>hook</Accent> takes a{' '}
               <Accent>4% fee</Accent> on the ETH side of each swap and sends it to the treasury — funding
               holder rewards. The hook adds no extra swap logic beyond the fee. Pool fee is zero; the hook
               is the only fee.
             </p>
             <ItemGrid
               items={[
-                'currency0: native ETH · currency1: $HASH',
+                'currency0: native ETH · currency1: $CHAIN',
                 'fee: 0 · hook: HashHook',
                 '4% ETH-side fee → treasury → distributor → holders',
               ]}
@@ -350,13 +350,13 @@ export default function Whitepaper() {
 
           <DocCard id="signal-005" badge="// 05 · limits & launch" title="Limits & launch">
             <p className="text-sm leading-relaxed text-zinc-400">
-              UniHash is a <Accent>fair launch</Accent>: the entire 5,000 $HASH supply pairs into the pool
+              UniHash is a <Accent>fair launch</Accent>: the entire 5,000 $CHAIN supply pairs into the pool
               with 1 ETH — no team allocation, nothing held back. Two limits enforce on-chain at open:
             </p>
             <ItemGrid
               items={[
-                'max 0.1% of supply per buy (5 $HASH)',
-                'max 2% of supply per wallet (100 $HASH)',
+                'max 0.1% of supply per buy (5 $CHAIN)',
+                'max 2% of supply per wallet (100 $CHAIN)',
                 'limits liftable by owner after launch with a documented floor',
                 'ownership renounced before public trading',
               ]}
@@ -391,7 +391,7 @@ export default function Whitepaper() {
             </p>
             <ItemGrid
               items={[
-                'HashToken · $HASH + hybrid + dividend points + seal/bond',
+                'HashToken · $CHAIN + hybrid + dividend points + seal/bond',
                 'HashRegistry · ERC-721 face of your Hashes',
                 'HashHook · v4 hook and swap fee',
                 'RewardDistributor · treasury ETH streams to holders',
@@ -403,8 +403,8 @@ export default function Whitepaper() {
           <DocCard id="signal-008" badge="// 08 · parameters" title="Parameters">
             <SpecGrid
               specs={[
-                { label: 'Supply', value: '5,000 $HASH' },
-                { label: '$HASH per Hash', value: '1 whole token' },
+                { label: 'Supply', value: '5,000 $CHAIN' },
+                { label: '$CHAIN per Hash', value: '1 whole token' },
                 { label: 'Max buy / wallet', value: '5 / 100' },
               ]}
             />
@@ -414,14 +414,14 @@ export default function Whitepaper() {
                 'bond: 1.0× → 2.5× over 90 days sealed',
                 'unseal burn: 8% of backing',
                 'launch: fair, 100% into pool with 1 ETH',
-                'mint rule: ≥1 whole $HASH spawns · <1 burns',
+                'mint rule: ≥1 whole $CHAIN spawns · <1 burns',
               ]}
             />
             <CodeBlock>{`UniHash (token + NFT + hook)  ${UNIHASH_CA}
 Etherscan                      ${ETHERSCAN_TOKEN_URL}
 Status                         ready after launch`}</CodeBlock>
             <p className="mt-6 text-sm leading-relaxed text-zinc-400">
-              Hold $HASH, grow a Hash, earn rewards. Everything above runs on-chain the moment you cross 1
+              Hold $CHAIN, grow a Hash, earn rewards. Everything above runs on-chain the moment you cross 1
               whole token.
             </p>
             <p className="mt-6 border-t border-zinc-800 pt-6 text-xs leading-relaxed text-zinc-500">
@@ -446,7 +446,7 @@ Status                         ready after launch`}</CodeBlock>
         </div>
 
         <footer className="mx-auto mt-4 max-w-4xl border-t border-zinc-800 py-8 text-center text-[10px] uppercase tracking-[0.3em] text-fluor">
-          © 2026 UniHash · on-chain &amp; verifiable · $HASH
+          © 2026 UniHash · on-chain &amp; verifiable · $CHAIN
         </footer>
       </main>
       </div>

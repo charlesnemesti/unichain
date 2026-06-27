@@ -1,43 +1,41 @@
-const DEFAULT_GLYPHS = '!<>-_\\/[]{}—=+*^?#_';
-
 const DEFAULTS = {
   text: '',
-  glyphs: DEFAULT_GLYPHS,
-  tickMs: 42,
-  scrambleTicks: 5,
-  holdMs: 5000,
-  clearMs: 50,
+  tickMs: 38,
+  deleteTickMs: 24,
+  holdMs: 2600,
+  clearMs: 420,
   cycleMs: null,
-  holdRatio: 0.28,
-  cursorChar: '█',
+  holdRatio: 0.42,
+  cursorChar: '▌',
 };
 
 /**
  * @param {string} text
  * @param {number} cycleMs
- * @param {{ scrambleTicks?: number, clearMs?: number, holdRatio?: number }} options
+ * @param {{ clearMs?: number, holdRatio?: number }} options
  */
 function resolveTypewriterTiming(text, cycleMs, options = {}) {
-  const scrambleTicks = options.scrambleTicks ?? DEFAULTS.scrambleTicks;
   const clearMs = options.clearMs ?? DEFAULTS.clearMs;
   const holdRatio = options.holdRatio ?? DEFAULTS.holdRatio;
   const charSteps = Math.max(text.length, 1);
   const holdMs = Math.round(cycleMs * holdRatio);
-  const decodeBudget = Math.max(cycleMs - holdMs - clearMs, charSteps * scrambleTicks * 12);
-  const tickMs = Math.max(12, Math.floor(decodeBudget / (charSteps * scrambleTicks)));
+  const typeDeleteBudget = Math.max(cycleMs - holdMs - clearMs, charSteps * 28);
+  const typeBudget = Math.floor(typeDeleteBudget * 0.68);
+  const deleteBudget = Math.max(typeDeleteBudget - typeBudget, charSteps * 16);
+  const tickMs = Math.max(14, Math.floor(typeBudget / charSteps));
+  const deleteTickMs = Math.max(10, Math.floor(deleteBudget / charSteps));
 
-  return { tickMs, holdMs, clearMs, scrambleTicks };
+  return { tickMs, deleteTickMs, holdMs, clearMs };
 }
 
 /**
- * Hacked Terminal Typewriter — decode scramble → hold → wipe → loop.
+ * Cinematic molecular typewriter — type → hold → delete → loop.
  *
  * @param {HTMLElement} element
  * @param {{
  *   text?: string,
- *   glyphs?: string,
  *   tickMs?: number,
- *   scrambleTicks?: number,
+ *   deleteTickMs?: number,
  *   holdMs?: number,
  *   clearMs?: number,
  *   cycleMs?: number | null,
@@ -53,20 +51,19 @@ export function createHackedTypewriter(element, options = {}) {
     ? resolveTypewriterTiming(target, base.cycleMs, base)
     : {
         tickMs: base.tickMs,
+        deleteTickMs: base.deleteTickMs,
         holdMs: base.holdMs,
         clearMs: base.clearMs,
-        scrambleTicks: base.scrambleTicks,
       };
 
   const config = { ...base, ...timing };
 
-  /** @type {'decode' | 'hold' | 'clear'} */
-  let phase = 'decode';
-  let revealedIndex = 0;
-  let scrambleFrame = 0;
+  /** @type {'type' | 'hold' | 'delete' | 'clear'} */
+  let phase = 'type';
+  let visibleCount = 0;
 
-  /** @type {ReturnType<typeof setInterval> | null} */
-  let tickInterval = null;
+  /** @type {ReturnType<typeof setTimeout> | null} */
+  let tickTimeout = null;
 
   /** @type {ReturnType<typeof setTimeout> | null} */
   let phaseTimeout = null;
@@ -78,35 +75,13 @@ export function createHackedTypewriter(element, options = {}) {
     }
   };
 
-  const randomGlyph = () => {
-    const pool = config.glyphs;
-    return pool[Math.floor(Math.random() * pool.length)];
-  };
-
   const buildFrame = () => {
     if (phase === 'clear') return '';
 
-    let output = '';
-
-    for (let i = 0; i < target.length; i++) {
-      const char = target[i];
-
-      if (char === '\n') {
-        if (i < revealedIndex) output += '<br />';
-        continue;
-      }
-
-      if (i < revealedIndex) {
-        output += escapeHtml(char);
-      } else if (i === revealedIndex && phase === 'decode') {
-        output += escapeHtml(randomGlyph());
-      } else if (i === revealedIndex + 1 && phase === 'decode') {
-        output += `<span class="hero-typewriter-ghost">${escapeHtml(randomGlyph())}</span>`;
-      }
-    }
+    const output = escapeHtml(target.slice(0, visibleCount));
 
     if (phase !== 'clear') {
-      output += `<span class="hero-typewriter-cursor" aria-hidden="true">${config.cursorChar}</span>`;
+      return `${output}<span class="hero-typewriter-cursor" aria-hidden="true">${config.cursorChar}</span>`;
     }
 
     return output;
@@ -116,10 +91,9 @@ export function createHackedTypewriter(element, options = {}) {
     element.innerHTML = buildFrame();
   };
 
-  const resetDecode = () => {
-    phase = 'decode';
-    revealedIndex = 0;
-    scrambleFrame = 0;
+  const resetType = () => {
+    phase = 'type';
+    visibleCount = 0;
     render();
   };
 
@@ -134,49 +108,57 @@ export function createHackedTypewriter(element, options = {}) {
 
       clearPhaseTimeout();
       phaseTimeout = setTimeout(() => {
-        resetDecode();
+        phase = 'delete';
       }, config.clearMs);
     }, config.holdMs);
   };
 
   const onTick = () => {
-    if (phase !== 'decode') return;
-
-    scrambleFrame += 1;
-
-    if (scrambleFrame >= config.scrambleTicks) {
-      scrambleFrame = 0;
-
-      if (revealedIndex < target.length) {
-        revealedIndex += 1;
-
-        while (revealedIndex < target.length && target[revealedIndex] === '\n') {
-          revealedIndex += 1;
-        }
+    if (phase === 'type') {
+      if (visibleCount < target.length) {
+        visibleCount += 1;
       }
-
-      if (revealedIndex >= target.length) {
+      if (visibleCount >= target.length) {
         beginHold();
         return;
       }
+      render();
+      return;
     }
 
-    render();
+    if (phase === 'delete') {
+      if (visibleCount > 0) {
+        visibleCount -= 1;
+      }
+      if (visibleCount <= 0) {
+        resetType();
+        return;
+      }
+      render();
+    }
   };
 
   const start = () => {
     dispose();
-    resetDecode();
+    resetType();
 
-    tickInterval = setInterval(onTick, config.tickMs);
+    const schedule = (delay) => {
+      tickTimeout = setTimeout(() => {
+        onTick();
+        const nextDelay = phase === 'delete' ? config.deleteTickMs : config.tickMs;
+        schedule(nextDelay);
+      }, delay);
+    };
+
+    schedule(config.tickMs);
   };
 
   const dispose = () => {
     clearPhaseTimeout();
 
-    if (tickInterval !== null) {
-      clearInterval(tickInterval);
-      tickInterval = null;
+    if (tickTimeout !== null) {
+      clearTimeout(tickTimeout);
+      tickTimeout = null;
     }
   };
 
